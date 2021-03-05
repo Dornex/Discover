@@ -1,9 +1,9 @@
 import { __prod__ } from "./constants";
-import { Options } from "@mikro-orm/core";
 import { Review } from "./entities/Review";
 import path from "path";
+import { MikroORM } from "@mikro-orm/core";
 
-export const mikroConfig: Options = {
+export default  {
   dbName: "discover",
   migrations: {
     path: path.join(__dirname, "./migrations "),
@@ -14,4 +14,4 @@ export const mikroConfig: Options = {
   password: "postgres",
   type: "postgresql",
   debug: !__prod__,
-};
+} as Parameters<typeof MikroORM.init>[0];
