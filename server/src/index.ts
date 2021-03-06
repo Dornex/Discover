@@ -6,6 +6,7 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { ReviewResolver } from "./resolvers/review";
+import { UserResolver } from "./resolvers/user";
 
 const main = async () => {
   const orm = await MikroORM.init(mikroConfig);
@@ -15,7 +16,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [ReviewResolver],
+      resolvers: [ReviewResolver, UserResolver],
       validate: false,
     }),
     context: () => ({ em: orm.em }),
@@ -26,8 +27,6 @@ const main = async () => {
   app.listen(4000, () => {
     console.log("express server started on localhost: 4000");
   });
-  // const posts = await orm.em.find(Review, {});
-  // console.log(posts);
 };
 
 main();
