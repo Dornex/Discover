@@ -33,7 +33,6 @@ class UserResponse {
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async me(@Ctx() { em, req }: MyContext) {
-    console.log(req.session.userId);
     if (!req.session.userId) {
       return null;
     }
@@ -109,7 +108,6 @@ export class UserResolver {
     }
 
     req.session.userId = user.id;
-
     return { user };
   }
 }
