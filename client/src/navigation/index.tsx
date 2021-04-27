@@ -11,20 +11,27 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { ColorSchemeName } from "react-native";
+import { useMeQuery } from "../generated/graphql";
 import LoginScreen from "../screens/LoginScreen";
 
 import RegisterScreen from "../screens/RegisterScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 
-export default function Navigation({
-  colorScheme,
-}: {
-  colorScheme: ColorSchemeName;
-}) {
+export default function Navigation() {
+  const [{ fetching, data }] = useMeQuery();
+
+  console.log(data);
+
+  if (fetching) {
+    return null;
+  }
+
   return (
     <NavigationContainer linking={LinkingConfiguration}>
-      <RootNavigator />
+      <RootNavigator
+        isLoggedIn={data?.me !== undefined && data.me !== null ? true : false}
+      />
     </NavigationContainer>
   );
 }
@@ -40,10 +47,10 @@ const Auth = () => {
   );
 };
 
-function RootNavigator() {
+const RootNavigator: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
   return (
     <Stack.Navigator
-      initialRouteName="Auth"
+      initialRouteName={isLoggedIn ? "Root" : "Auth"}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen
@@ -54,4 +61,4 @@ function RootNavigator() {
       <Stack.Screen name="Root" component={BottomTabNavigator} />
     </Stack.Navigator>
   );
-}
+};

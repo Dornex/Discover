@@ -1,43 +1,63 @@
 import { useNavigation } from "@react-navigation/core";
 import { useFormik } from "formik";
 import React from "react";
-import { TouchableOpacity, View, Text } from "react-native";
+import { TouchableOpacity, View, Text, Image } from "react-native";
 import { COLORS } from "../constants/Colors";
+import { useLoginMutation } from "../generated/graphql";
+import { toErrorMap } from "../utils/toErrorMap";
 import Button from "./Button";
 import TextInput from "./TextInput";
 
 const LoginForm = () => {
   const { navigate } = useNavigation();
 
-  const { handleChange, handleSubmit, values } = useFormik({
-    initialValues: { email: "", password: "" },
-    onSubmit: (values) => console.log(values),
+  const { handleChange, handleSubmit, values, errors, touched } = useFormik({
+    initialValues: { username: "", password: "" },
+    onSubmit: async (values, { setErrors }) => {
+      const response = await login(values);
+
+      if (response.data?.login.errors) {
+        setErrors(toErrorMap(response.data.login.errors));
+      } else if (response.data?.login.user) {
+        navigate("Root");
+      }
+    },
   });
+
+  const [, login] = useLoginMutation();
 
   return (
     <View
       style={{
         flex: 1,
         width: "100%",
+        paddingBottom: 100,
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
       }}
     >
+      <Image
+        source={require("../assets/images/logo.png")}
+        style={{ width: 250, height: 250 }}
+        resizeMode="contain"
+      />
       <View style={{ paddingHorizontal: 32, marginBottom: 16, width: "100%" }}>
         <TextInput
           icon="mail"
-          placeholder="Enter your email"
+          error={touched.username && errors.username}
+          placeholder="Enter your username"
           autoCapitalize="none"
           keyboardType="email-address"
-          onChangeText={handleChange("email")}
-          value={values.email}
+          onChangeText={handleChange("username")}
+          value={values.username}
         />
       </View>
 
       <View style={{ paddingHorizontal: 32, marginBottom: 16, width: "100%" }}>
         <TextInput
           icon="key"
+          error={touched.password && errors.password}
           placeholder="Enter your password"
           autoCapitalize="none"
           keyboardType="password"
@@ -60,7 +80,7 @@ const LoginForm = () => {
         }}
       >
         <Text style={{ color: COLORS.ORANGE, fontSize: 16, marginTop: 10 }}>
-          Do you want to create an account?
+          Do you want an account?
         </Text>
       </TouchableOpacity>
     </View>
