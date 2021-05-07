@@ -15,13 +15,12 @@ import { useMeQuery } from "../generated/graphql";
 import LoginScreen from "../screens/LoginScreen";
 
 import RegisterScreen from "../screens/RegisterScreen";
+import RestaurantScreen from "../screens/RestaurantScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 
 export default function Navigation() {
   const [{ fetching, data }] = useMeQuery();
-
-  console.log(data);
 
   if (fetching) {
     return null;
@@ -47,6 +46,14 @@ const Auth = () => {
   );
 };
 
+const RestaurantNavigator = () => {
+  return (
+    <Stack.Navigator initialRouteName="Restaurant">
+      <Stack.Screen name="Restaurant" component={RestaurantScreen} />
+    </Stack.Navigator>
+  );
+};
+
 const RootNavigator: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
   return (
     <Stack.Navigator
@@ -59,6 +66,7 @@ const RootNavigator: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
+      <Stack.Screen name="Restaurant" component={RestaurantNavigator} />
     </Stack.Navigator>
   );
 };

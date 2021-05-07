@@ -1,6 +1,7 @@
 import React from "react";
-import { Text, View } from "react-native";
 import styled from "styled-components/native";
+import HomeScreenHeader from "../components/HomeScreen/HomeScreenHeader";
+import NearbyRestaurants from "../components/HomeScreen/NearbyRestaurants";
 
 const Container = styled.View`
   flex: 1;
@@ -9,7 +10,8 @@ const Container = styled.View`
 const HomeScreen = () => {
   return (
     <Container>
-      <Text>This is the HomeScreen</Text>
+      <HomeScreenHeader />
+      <NearbyRestaurants />
     </Container>
   );
 };

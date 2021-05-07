@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Review } from "./Review";
@@ -14,15 +14,15 @@ import { Review } from "./Review";
 @Entity()
 export class Restaurant extends BaseEntity {
   @Field(() => String)
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id!: string;
 
   @Field(() => Float)
-  @Column("decimal", { precision: 7, scale: 2 })
+  @Column("decimal", { precision: 17, scale: 8 })
   latitude!: number;
 
   @Field(() => Float)
-  @Column("decimal", { precision: 7, scale: 2 })
+  @Column("decimal", { precision: 17, scale: 8 })
   longitude!: number;
 
   @Field(() => String)

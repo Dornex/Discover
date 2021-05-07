@@ -1,0 +1,11 @@
+mutation GetNearbyRestaurants($longitude: Float!, $latitude: Float!) {
+  getNearbyRestaurants(longitude: $longitude, latitude: $latitude) {
+    id
+    name
+    latitude
+    longitude
+    name
+    rating
+    imageUrl
+  }
+}

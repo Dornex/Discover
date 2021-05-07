@@ -28,11 +28,12 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  getNearbyRestaurants?: Maybe<Array<Restaurant>>;
 };
 
 
 export type MutationCreateReviewArgs = {
-  title: Scalars['String'];
+  input: ReviewInput;
 };
 
 
@@ -58,11 +59,19 @@ export type MutationLoginArgs = {
   username: Scalars['String'];
 };
 
+
+export type MutationGetNearbyRestaurantsArgs = {
+  longitude: Scalars['Float'];
+  latitude: Scalars['Float'];
+};
+
 export type Query = {
   __typename?: 'Query';
   reviews: Array<Review>;
   review?: Maybe<Review>;
   me?: Maybe<User>;
+  restaurants: Array<Restaurant>;
+  restaurant?: Maybe<Restaurant>;
 };
 
 
@@ -70,20 +79,47 @@ export type QueryReviewArgs = {
   id: Scalars['Int'];
 };
 
+
+export type QueryRestaurantArgs = {
+  id: Scalars['String'];
+};
+
+export type Restaurant = {
+  __typename?: 'Restaurant';
+  id: Scalars['String'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  name: Scalars['String'];
+  rating: Scalars['Float'];
+  imageUrl: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Review = {
   __typename?: 'Review';
   id: Scalars['Int'];
+  title: Scalars['String'];
+  content: Scalars['String'];
+  points: Scalars['Float'];
+  creatorId: Scalars['Float'];
+  restaurantId: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type ReviewInput = {
+  restaurantId: Scalars['String'];
   title: Scalars['String'];
+  content: Scalars['String'];
 };
 
 export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
+  username: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-  username: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -95,6 +131,20 @@ export type UserResponse = {
 export type RegularUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username'>
+);
+
+export type GetNearbyRestaurantsMutationVariables = Exact<{
+  longitude: Scalars['Float'];
+  latitude: Scalars['Float'];
+}>;
+
+
+export type GetNearbyRestaurantsMutation = (
+  { __typename?: 'Mutation' }
+  & { getNearbyRestaurants?: Maybe<Array<(
+    { __typename?: 'Restaurant' }
+    & Pick<Restaurant, 'id' | 'name' | 'latitude' | 'longitude' | 'rating' | 'imageUrl'>
+  )>> }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -162,6 +212,23 @@ export const RegularUserFragmentDoc = gql`
   username
 }
     `;
+export const GetNearbyRestaurantsDocument = gql`
+    mutation GetNearbyRestaurants($longitude: Float!, $latitude: Float!) {
+  getNearbyRestaurants(longitude: $longitude, latitude: $latitude) {
+    id
+    name
+    latitude
+    longitude
+    name
+    rating
+    imageUrl
+  }
+}
+    `;
+
+export function useGetNearbyRestaurantsMutation() {
+  return Urql.useMutation<GetNearbyRestaurantsMutation, GetNearbyRestaurantsMutationVariables>(GetNearbyRestaurantsDocument);
+};
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   login(username: $username, password: $password) {

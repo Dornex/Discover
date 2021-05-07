@@ -1,4 +1,4 @@
-import { Arg, Ctx, Float, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Float, Mutation, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { GOOGLE_API_KEY } from "../constants";
 import { Restaurant } from "../entities/Restaurant";
@@ -6,7 +6,7 @@ import { MyContext } from "../types";
 
 @Resolver()
 export class GoogleMapsResolver {
-  @Query(() => [Restaurant], { nullable: true })
+  @Mutation(() => [Restaurant], { nullable: true })
   async getNearbyRestaurants(
     @Arg("latitude", () => Float) latitude: number,
     @Arg("longitude", () => Float) longitude: number,
@@ -50,6 +50,8 @@ export class GoogleMapsResolver {
           responseType: "stream",
         });
       }
+
+      console.log(place.place_id);
 
       return {
         id: place.place_id,

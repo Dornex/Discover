@@ -22,4 +22,5 @@ export enum COLORS {
   WHITE = "#FFFFFF",
   BLACK = "#000000",
   ORANGE = "#e94832",
+  YELLOW = "#c7c148",
 }
