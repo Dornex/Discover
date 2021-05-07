@@ -23,9 +23,13 @@ const redis_1 = __importDefault(require("redis"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const cors_1 = __importDefault(require("cors"));
+const google_maps_services_js_1 = require("@googlemaps/google-maps-services-js");
 const typeorm_1 = require("typeorm");
 const Review_1 = require("./entities/Review");
 const User_1 = require("./entities/User");
+const Restaurant_1 = require("./entities/Restaurant");
+const restaurant_1 = require("./resolvers/restaurant");
+const googleMaps_1 = require("./resolvers/googleMaps");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: "postgres",
@@ -34,7 +38,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         password: "postgres",
         logging: true,
         synchronize: true,
-        entities: [Review_1.Review, User_1.User],
+        entities: [Review_1.Review, User_1.User, Restaurant_1.Restaurant],
     });
     const app = express_1.default();
     const RedisStore = connect_redis_1.default(express_session_1.default);
@@ -45,6 +49,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         origin: "http://localhost:19006",
         credentials: true,
     }));
+    const googleClient = new google_maps_services_js_1.Client();
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
         store: new RedisStore({
@@ -63,10 +68,15 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
-            resolvers: [review_1.ReviewResolver, user_1.UserResolver],
+            resolvers: [
+                review_1.ReviewResolver,
+                user_1.UserResolver,
+                restaurant_1.RestaurantResolver,
+                googleMaps_1.GoogleMapsResolver,
+            ],
             validate: false,
         }),
-        context: ({ req, res }) => ({ req, res }),
+        context: ({ req, res }) => ({ req, res, googleClient }),
     });
     apolloServer.applyMiddleware({
         app,

@@ -1,5 +1,29 @@
-import { Resolver, Query, Arg, Int, Mutation } from "type-graphql";
+import {
+  Resolver,
+  Query,
+  Arg,
+  Int,
+  Mutation,
+  InputType,
+  Field,
+  Ctx,
+  UseMiddleware,
+} from "type-graphql";
 import { Review } from "../entities/Review";
+import { isAuth } from "../middleware/isAuth";
+import { MyContext } from "../types";
+
+@InputType()
+class ReviewInput {
+  @Field()
+  restaurantId: string;
+
+  @Field()
+  title: string;
+
+  @Field()
+  content: string;
+}
 
 @Resolver()
 export class ReviewResolver {
@@ -14,10 +38,16 @@ export class ReviewResolver {
   }
 
   @Mutation(() => Review)
+  @UseMiddleware(isAuth)
   async createReview(
-    @Arg("title", () => String) title: string
+    @Arg("input") input: ReviewInput,
+    @Ctx() { req }: MyContext
   ): Promise<Review> {
-    return Review.create({ title }).save();
+    return Review.create({
+      ...input,
+      creatorId: req.session.userId,
+      restaurantId: input.restaurantId,
+    }).save();
   }
 
   @Mutation(() => Review, { nullable: true })

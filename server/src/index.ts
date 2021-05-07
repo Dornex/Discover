@@ -10,10 +10,13 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { MyContext } from "./types";
 import cors from "cors";
-// import { Client } from "@googlemaps/google-maps-services-js";
+import { Client } from "@googlemaps/google-maps-services-js";
 import { createConnection } from "typeorm";
 import { Review } from "./entities/Review";
 import { User } from "./entities/User";
+import { Restaurant } from "./entities/Restaurant";
+import { RestaurantResolver } from "./resolvers/restaurant";
+import { GoogleMapsResolver } from "./resolvers/googleMaps";
 
 const main = async () => {
   await createConnection({
@@ -23,8 +26,9 @@ const main = async () => {
     password: "postgres",
     logging: true,
     synchronize: true,
-    entities: [Review, User],
+    entities: [Review, User, Restaurant],
   });
+
   const app = express();
   const RedisStore = connectRedis(session);
   const redisClient = redis.createClient({
@@ -38,21 +42,7 @@ const main = async () => {
     })
   );
 
-  // const client = new Client({ config: {} });
-  // client
-  //   .placesNearby({
-  //     params: {
-  //       location: {
-  //         latitude: 46.916,
-  //         longitude: 26.429,
-  //       },
-  //       key: GOOGLE_API_KEY,
-  //       type: "restaurant",
-  //       radius: 3500,
-  //     },
-  //   })
-  //   .then((response) => console.log(response))
-  //   .catch((err) => console.log(err));
+  const googleClient = new Client();
 
   app.use(
     session({
@@ -75,10 +65,15 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [ReviewResolver, UserResolver],
+      resolvers: [
+        ReviewResolver,
+        UserResolver,
+        RestaurantResolver,
+        GoogleMapsResolver,
+      ],
       validate: false,
     }),
-    context: ({ req, res }): MyContext => ({ req, res }),
+    context: ({ req, res }): MyContext => ({ req, res, googleClient }),
   });
 
   apolloServer.applyMiddleware({
