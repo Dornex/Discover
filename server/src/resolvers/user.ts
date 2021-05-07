@@ -33,20 +33,17 @@ class UserResponse {
 @Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async me(@Ctx() { em, req }: MyContext) {
+  me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {
       return null;
     }
-
-    const user = await em.findOne(User, { id: req.session.userId });
-    return user;
+    return User.findOne(req.session.userId);
   }
 
   @Mutation(() => UserResponse)
   async register(
     @Arg("username", () => String) username: string,
-    @Arg("password", () => String) password: string,
-    @Ctx() { em }: MyContext
+    @Arg("password", () => String) password: string
   ): Promise<UserResponse> {
     if (username.length <= 2) {
       return {
@@ -65,9 +62,12 @@ export class UserResolver {
     }
 
     const hashedPassword = await argon2.hash(password);
-    const user = em.create(User, { username, password: hashedPassword });
+    let user;
     try {
-      await em.persistAndFlush(user);
+      user = await User.create({ username, password: hashedPassword }).save();
+      return {
+        user,
+      };
     } catch (err) {
       if (err.detail.includes("already exists")) {
         return {
@@ -82,9 +82,9 @@ export class UserResolver {
   async login(
     @Arg("username", () => String) username: string,
     @Arg("password", () => String) password: string,
-    @Ctx() { em, req }: MyContext
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const user = await em.findOne(User, { username });
+    const user = await User.findOne({ where: { username } });
     if (!user) {
       return {
         errors: [
