@@ -1,7 +1,8 @@
-import { Arg, Ctx, Float, Mutation, Resolver } from "type-graphql";
+import { Arg, Ctx, Float, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { GOOGLE_API_KEY } from "../constants";
 import { Restaurant } from "../entities/Restaurant";
+import { RestaurantDetails } from "../entities/RestaurantDetails";
 import { MyContext } from "../types";
 
 @Resolver()
@@ -51,8 +52,6 @@ export class GoogleMapsResolver {
         });
       }
 
-      console.log(place.place_id);
-
       return {
         id: place.place_id,
         latitude: place.geometry?.location.lat,
@@ -60,9 +59,31 @@ export class GoogleMapsResolver {
         name: place.name,
         rating: place.rating,
         imageUrl: photo ? photo.data.responseUrl : "",
+        priceRange: place.price_level !== undefined ? place.price_level : -1,
       };
     });
 
     return restaurants;
+  }
+
+  @Mutation(() => RestaurantDetails)
+  async getDetailedRestaurant(
+    @Arg("restaurantId", () => String) restaurantId: string,
+    @Ctx() { googleClient }: MyContext
+  ) {
+    const restaurantDetails = await googleClient.placeDetails({
+      params: {
+        key: GOOGLE_API_KEY,
+        place_id: restaurantId,
+        fields: ["formatted_address", "formatted_phone_number", "website"],
+      },
+    });
+
+    return {
+      id: restaurantId,
+      address: restaurantDetails.data.result.formatted_address,
+      phoneNumber: restaurantDetails.data.result.formatted_phone_number,
+      website: restaurantDetails.data.result.website,
+    };
   }
 }

@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ListRenderItem, View, Text, FlatList } from "react-native";
 import styled from "styled-components/native";
 import { COLORS } from "../../constants/Colors";
@@ -21,7 +21,7 @@ const RestaurantContainer = styled.TouchableOpacity`
   padding: 0 20px;
   margin-right: 20px;
   width: 190px;
-  height: "100%";
+  height: 100%;
   justify-content: flex-start;
 `;
 
@@ -39,8 +39,9 @@ const NearbyRestaurants = () => {
     getNearbyRestaurants({ latitude: 44.434486, longitude: 26.086292 });
   }, []);
 
+  console.log(data);
+
   const renderNearbyRestaurants: ListRenderItem<Restaurant> = ({ item }) => {
-    console.log(item.id);
     return (
       <RestaurantContainer
         onPress={() => {
@@ -48,22 +49,18 @@ const NearbyRestaurants = () => {
             screen: "Restaurant",
             params: {
               restaurantId: item.id,
+              name: item.name,
+              latitude: item.latitude,
+              longitude: item.longitude,
+              rating: item.rating,
+              imageUrl: item.imageUrl,
+              priceRange: item.priceRange,
             },
           });
         }}
       >
         <RestaurantImage source={{ uri: item.imageUrl }} />
-        <Text
-          style={{
-            flex: 1,
-            flexWrap: "wrap",
-            fontSize: 14,
-            fontWeight: 700,
-            marginTop: 5,
-          }}
-        >
-          {item.name}
-        </Text>
+        <Text>{item.name}</Text>
         <RestaurantRating>
           <Text style={{ fontSize: 20 }}>{item.rating}</Text>
           <Ionicons name="star" color={COLORS.YELLOW} size={20} />
@@ -77,7 +74,6 @@ const NearbyRestaurants = () => {
       <Text
         style={{
           fontSize: 24,
-          fontWeight: 700,
           marginLeft: 20,
           marginRight: 20,
           marginVertical: 10,

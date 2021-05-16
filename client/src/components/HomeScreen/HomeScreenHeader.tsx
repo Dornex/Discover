@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import { Image } from "react-native";
 
 const Container = styled.View`
-  width: "100%";
+  width: 100%;
 `;
 
 const HomeScreenHeader = () => {

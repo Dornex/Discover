@@ -27,7 +27,7 @@ function betterUpdateQuery<Result, Query>(
 }
 
 const client = createClient({
-  url: "http://localhost:4000/graphql",
+  url: "http://a01ca6720114.ngrok.io/graphql",
   fetchOptions: {
     credentials: "include",
   },

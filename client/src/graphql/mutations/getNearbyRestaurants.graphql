@@ -7,5 +7,6 @@ mutation GetNearbyRestaurants($longitude: Float!, $latitude: Float!) {
     name
     rating
     imageUrl
+    priceRange
   }
 }

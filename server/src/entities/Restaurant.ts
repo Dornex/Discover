@@ -1,4 +1,4 @@
-import { ObjectType, Field, Float } from "type-graphql";
+import { ObjectType, Field, Float, Int } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -34,6 +34,9 @@ export class Restaurant extends BaseEntity {
 
   @Field(() => String)
   imageUrl: string;
+
+  @Field(() => Int)
+  priceRange!: number;
 
   @OneToMany(() => Review, (review) => review.restaurant)
   reviews: Review[];

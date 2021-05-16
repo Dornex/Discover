@@ -1,13 +1,229 @@
-import React from "react";
-import { View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { Dimensions, Text, Image, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import styled from "styled-components/native";
+import { COLORS } from "../constants/Colors";
+import BackButton from "../components/BackButton";
+import { useNavigation } from "@react-navigation/core";
+import SwitchButton from "../components/SwitchButton";
+import RestaurantDetailedInfo from "../components/RestaurantScreen/RestaurantDetailedInfo";
+import { useGetDetailedRestaurantMutation } from "../generated/graphql";
+import { PriceRange } from "../components/PriceRange";
+import AddReviewModal from "../components/RestaurantScreen/AddReviewModal";
+
+const Container = styled.View`
+  flex-direction: column;
+`;
+
+const RestaurantImageContainer = styled.View<{ height: number }>``;
+
+const RestaurantImage = styled.Image<{ height: number }>`
+  position: absolute;
+  left: -150px;
+  width: ${Dimensions.get("screen").width + 300}px;
+  height: ${({ height }) => `${height}px`};
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  filter: brightness(50%);
+`;
+
+const RestaurantDetails = styled.View<{ height: number }>`
+  padding: 25px 28px;
+  height: ${({ height }) => `${height}px`};
+  justify-content: center;
+  align-items: center;
+`;
+
+const PriceRangeContainer = styled.View`
+  flex-direction: row;
+`;
+
+const SectionSelectorContainer = styled.View`
+  flex-direction: row;
+  width: 100%;
+  margin-top: 10px;
+`;
+
+const AddReviewContainer = styled.TouchableOpacity`
+  flex-direction: row;
+  border: 2px solid ${COLORS.ORANGE};
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+`;
+
+enum SECTIONS {
+  DETAILS,
+  REVIEWS,
+  MAP,
+}
 
 const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
-  console.log("Route:", route);
-  const { restaurantId } = route.params;
+  const {
+    restaurantId,
+    name,
+    longitude,
+    latitude,
+    rating,
+    imageUrl,
+    priceRange,
+  }: {
+    priceRange: number;
+    restaurantId: string;
+    name: string;
+    longitude: number;
+    latitude: number;
+    rating: number;
+    imageUrl: string;
+  } = route.params;
+  const { goBack } = useNavigation();
 
-  console.log(restaurantId);
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [selectedSection, setSelectedSection] = useState<SECTIONS>(
+    SECTIONS.DETAILS
+  );
+  const [modalVisible, setModalVisible] = useState(false);
 
-  return <View></View>;
+  const [
+    { data: detailedRestaurantData, fetching: detailedRestaurantFetching },
+    getDetailedRestaurant,
+  ] = useGetDetailedRestaurantMutation();
+
+  useEffect(() => {
+    Image.getSize(imageUrl, (width, height) => setImageSize({ width, height }));
+    getDetailedRestaurant({ restaurantId });
+  }, []);
+
+  const renderContent = () => {
+    switch (selectedSection) {
+      case SECTIONS.DETAILS: {
+        if (detailedRestaurantFetching) {
+          return <Text>Loading...</Text>;
+        }
+        return (
+          <RestaurantDetailedInfo
+            address={detailedRestaurantData?.getDetailedRestaurant.address}
+            phoneNumber={
+              detailedRestaurantData?.getDetailedRestaurant.phoneNumber
+            }
+            priceLevel={priceRange}
+            rating={rating}
+            website={detailedRestaurantData?.getDetailedRestaurant.website}
+          />
+        );
+      }
+      // case SECTIONS.REVIEWS:
+      //   return <RestaurantReviews />;
+      // case SECTIONS.MAP:
+      //   return <RestaurantMap />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <SafeAreaView>
+      <Container style={{ width: Dimensions.get("screen").width }}>
+        <RestaurantImageContainer
+          height={
+            (imageSize.height * Dimensions.get("screen").width) /
+            imageSize.width
+          }
+        >
+          <RestaurantImage
+            height={
+              (imageSize.height * Dimensions.get("screen").width) /
+              imageSize.width
+            }
+            source={{ uri: imageUrl }}
+          />
+        </RestaurantImageContainer>
+
+        <BackButton
+          onPress={() => {
+            goBack();
+          }}
+        />
+
+        <RestaurantDetails
+          height={
+            (imageSize.height * Dimensions.get("screen").width) /
+            imageSize.width
+          }
+        >
+          <Text
+            color={COLORS.WHITE}
+            style={{
+              textAlign: "center",
+              marginBottom: 20,
+              fontSize: 25,
+              fontWeight: 700,
+            }}
+          >
+            {name}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text color={COLORS.WHITE} style={{ fontSize: 18 }}>
+              {rating}
+              <Ionicons name="star" color={COLORS.WHITE} size={20} />
+              {priceRange !== -1 ? (
+                <>
+                  <Text style={{ fontSize: 20, color: COLORS.WHITE }}> | </Text>
+                  <PriceRangeContainer>
+                    <PriceRange priceLevel={priceRange} />
+                  </PriceRangeContainer>
+                </>
+              ) : null}
+            </Text>
+          </View>
+          <AddReviewContainer
+            onPress={() => {
+              setModalVisible(true);
+            }}
+          >
+            <Text
+              style={{ color: COLORS.ORANGE, fontSize: 16, fontWeight: 700 }}
+            >
+              + ADD REVIEW
+            </Text>
+          </AddReviewContainer>
+        </RestaurantDetails>
+        <SectionSelectorContainer>
+          <SwitchButton
+            active={selectedSection === SECTIONS.DETAILS}
+            onPress={() => {
+              setSelectedSection(SECTIONS.DETAILS);
+            }}
+            text="Details"
+          />
+          <SwitchButton
+            active={selectedSection === SECTIONS.REVIEWS}
+            onPress={() => {
+              setSelectedSection(SECTIONS.REVIEWS);
+            }}
+            text="Reviews"
+          />
+          <SwitchButton
+            active={selectedSection === SECTIONS.MAP}
+            onPress={() => {
+              setSelectedSection(SECTIONS.MAP);
+            }}
+            text="Map"
+          />
+        </SectionSelectorContainer>
+        {renderContent()}
+      </Container>
+    </SafeAreaView>
+  );
 };
 
 export default RestaurantScreen;

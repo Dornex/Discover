@@ -1,0 +1,8 @@
+mutation getDetailedRestaurant($restaurantId: String!) {
+  getDetailedRestaurant(restaurantId: $restaurantId) {
+    address
+    phoneNumber
+    id
+    website
+  }
+}

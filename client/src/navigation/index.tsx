@@ -49,7 +49,11 @@ const Auth = () => {
 const RestaurantNavigator = () => {
   return (
     <Stack.Navigator initialRouteName="Restaurant">
-      <Stack.Screen name="Restaurant" component={RestaurantScreen} />
+      <Stack.Screen
+        name="Restaurant"
+        component={RestaurantScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
@@ -66,7 +70,11 @@ const RootNavigator: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
-      <Stack.Screen name="Restaurant" component={RestaurantNavigator} />
+      <Stack.Screen
+        name="Restaurant"
+        component={RestaurantNavigator}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

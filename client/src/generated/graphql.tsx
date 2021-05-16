@@ -29,6 +29,7 @@ export type Mutation = {
   login: UserResponse;
   logout: Scalars['Boolean'];
   getNearbyRestaurants?: Maybe<Array<Restaurant>>;
+  getDetailedRestaurant: RestaurantDetails;
 };
 
 
@@ -65,6 +66,11 @@ export type MutationGetNearbyRestaurantsArgs = {
   latitude: Scalars['Float'];
 };
 
+
+export type MutationGetDetailedRestaurantArgs = {
+  restaurantId: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   reviews: Array<Review>;
@@ -92,8 +98,17 @@ export type Restaurant = {
   name: Scalars['String'];
   rating: Scalars['Float'];
   imageUrl: Scalars['String'];
+  priceRange: Scalars['Int'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type RestaurantDetails = {
+  __typename?: 'RestaurantDetails';
+  id: Scalars['String'];
+  address: Scalars['String'];
+  phoneNumber: Scalars['String'];
+  website: Scalars['String'];
 };
 
 export type Review = {
@@ -133,6 +148,19 @@ export type RegularUserFragment = (
   & Pick<User, 'id' | 'username'>
 );
 
+export type GetDetailedRestaurantMutationVariables = Exact<{
+  restaurantId: Scalars['String'];
+}>;
+
+
+export type GetDetailedRestaurantMutation = (
+  { __typename?: 'Mutation' }
+  & { getDetailedRestaurant: (
+    { __typename?: 'RestaurantDetails' }
+    & Pick<RestaurantDetails, 'address' | 'phoneNumber' | 'id' | 'website'>
+  ) }
+);
+
 export type GetNearbyRestaurantsMutationVariables = Exact<{
   longitude: Scalars['Float'];
   latitude: Scalars['Float'];
@@ -143,7 +171,7 @@ export type GetNearbyRestaurantsMutation = (
   { __typename?: 'Mutation' }
   & { getNearbyRestaurants?: Maybe<Array<(
     { __typename?: 'Restaurant' }
-    & Pick<Restaurant, 'id' | 'name' | 'latitude' | 'longitude' | 'rating' | 'imageUrl'>
+    & Pick<Restaurant, 'id' | 'name' | 'latitude' | 'longitude' | 'rating' | 'imageUrl' | 'priceRange'>
   )>> }
 );
 
@@ -212,6 +240,20 @@ export const RegularUserFragmentDoc = gql`
   username
 }
     `;
+export const GetDetailedRestaurantDocument = gql`
+    mutation getDetailedRestaurant($restaurantId: String!) {
+  getDetailedRestaurant(restaurantId: $restaurantId) {
+    address
+    phoneNumber
+    id
+    website
+  }
+}
+    `;
+
+export function useGetDetailedRestaurantMutation() {
+  return Urql.useMutation<GetDetailedRestaurantMutation, GetDetailedRestaurantMutationVariables>(GetDetailedRestaurantDocument);
+};
 export const GetNearbyRestaurantsDocument = gql`
     mutation GetNearbyRestaurants($longitude: Float!, $latitude: Float!) {
   getNearbyRestaurants(longitude: $longitude, latitude: $latitude) {
@@ -222,6 +264,7 @@ export const GetNearbyRestaurantsDocument = gql`
     name
     rating
     imageUrl
+    priceRange
   }
 }
     `;
