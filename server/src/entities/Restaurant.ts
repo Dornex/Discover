@@ -1,4 +1,5 @@
 import { ObjectType, Field, Float, Int } from "type-graphql";
+import { TypeormLoader } from "type-graphql-dataloader";
 import {
   BaseEntity,
   Column,
@@ -6,6 +7,7 @@ import {
   Entity,
   OneToMany,
   PrimaryColumn,
+  RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { Review } from "./Review";
@@ -38,7 +40,12 @@ export class Restaurant extends BaseEntity {
   @Field(() => Int)
   priceRange!: number;
 
+  @RelationId((restaurant: Restaurant) => restaurant.reviews)
+  reviewIds: number[];
+
+  @Field(() => [Review])
   @OneToMany(() => Review, (review) => review.restaurant)
+  @TypeormLoader(() => Review, (restaurant: Restaurant) => restaurant.reviewIds)
   reviews: Review[];
 
   @Field(() => String)

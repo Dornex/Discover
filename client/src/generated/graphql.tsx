@@ -148,6 +148,19 @@ export type RegularUserFragment = (
   & Pick<User, 'id' | 'username'>
 );
 
+export type CreateReviewMutationVariables = Exact<{
+  input: ReviewInput;
+}>;
+
+
+export type CreateReviewMutation = (
+  { __typename?: 'Mutation' }
+  & { createReview: (
+    { __typename?: 'Review' }
+    & Pick<Review, 'title' | 'content' | 'createdAt'>
+  ) }
+);
+
 export type GetDetailedRestaurantMutationVariables = Exact<{
   restaurantId: Scalars['String'];
 }>;
@@ -240,6 +253,19 @@ export const RegularUserFragmentDoc = gql`
   username
 }
     `;
+export const CreateReviewDocument = gql`
+    mutation createReview($input: ReviewInput!) {
+  createReview(input: $input) {
+    title
+    content
+    createdAt
+  }
+}
+    `;
+
+export function useCreateReviewMutation() {
+  return Urql.useMutation<CreateReviewMutation, CreateReviewMutationVariables>(CreateReviewDocument);
+};
 export const GetDetailedRestaurantDocument = gql`
     mutation getDetailedRestaurant($restaurantId: String!) {
   getDetailedRestaurant(restaurantId: $restaurantId) {

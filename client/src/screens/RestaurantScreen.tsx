@@ -11,6 +11,7 @@ import RestaurantDetailedInfo from "../components/RestaurantScreen/RestaurantDet
 import { useGetDetailedRestaurantMutation } from "../generated/graphql";
 import { PriceRange } from "../components/PriceRange";
 import AddReviewModal from "../components/RestaurantScreen/AddReviewModal";
+import StyledText from "../components/StyledText";
 
 const Container = styled.View`
   flex-direction: column;
@@ -154,17 +155,17 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
             imageSize.width
           }
         >
-          <Text
+          <StyledText
+            fontSize={25}
+            fontWeight={700}
             color={COLORS.WHITE}
             style={{
               textAlign: "center",
               marginBottom: 20,
-              fontSize: 25,
-              fontWeight: 700,
             }}
           >
             {name}
-          </Text>
+          </StyledText>
           <View
             style={{
               flexDirection: "row",
@@ -172,7 +173,7 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
               justifyContent: "center",
             }}
           >
-            <Text color={COLORS.WHITE} style={{ fontSize: 18 }}>
+            <StyledText color={COLORS.WHITE} fontSize={18}>
               {rating}
               <Ionicons name="star" color={COLORS.WHITE} size={20} />
               {priceRange !== -1 ? (
@@ -183,18 +184,16 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
                   </PriceRangeContainer>
                 </>
               ) : null}
-            </Text>
+            </StyledText>
           </View>
           <AddReviewContainer
             onPress={() => {
               setModalVisible(true);
             }}
           >
-            <Text
-              style={{ color: COLORS.ORANGE, fontSize: 16, fontWeight: 700 }}
-            >
+            <StyledText fontSize={16} fontWeight={700} color={COLORS.ORANGE}>
               + ADD REVIEW
-            </Text>
+            </StyledText>
           </AddReviewContainer>
         </RestaurantDetails>
         <SectionSelectorContainer>
@@ -222,6 +221,14 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
         </SectionSelectorContainer>
         {renderContent()}
       </Container>
+      <AddReviewModal
+        restaurantId={restaurantId}
+        closeModal={() => {
+          setModalVisible(false);
+          console.log("Closed the modal!");
+        }}
+        modalVisible={modalVisible}
+      />
     </SafeAreaView>
   );
 };

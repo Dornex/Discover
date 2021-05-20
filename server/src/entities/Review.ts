@@ -1,12 +1,15 @@
 import { ObjectType, Field, Int } from "type-graphql";
+import { TypeormLoader } from "type-graphql-dataloader";
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { Restaurant } from "./Restaurant";
@@ -39,11 +42,13 @@ export class Review extends BaseEntity {
   @Column()
   restaurantId: string;
 
+  @Field(() => Restaurant)
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.reviews)
+  @TypeormLoader(() => Restaurant, (review: Review) => review.restaurantId)
+  restaurant: Restaurant;
+
   @ManyToOne(() => User, (user) => user.reviews)
   creator: User;
-
-  @OneToOne(() => Restaurant, (restaurant) => restaurant.reviews)
-  restaurant: Restaurant;
 
   @Field(() => String)
   @CreateDateColumn()

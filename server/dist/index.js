@@ -30,6 +30,7 @@ const User_1 = require("./entities/User");
 const Restaurant_1 = require("./entities/Restaurant");
 const restaurant_1 = require("./resolvers/restaurant");
 const googleMaps_1 = require("./resolvers/googleMaps");
+const type_graphql_dataloader_1 = require("type-graphql-dataloader");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: "postgres",
@@ -67,6 +68,11 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         resave: false,
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
+        plugins: [
+            type_graphql_dataloader_1.ApolloServerLoaderPlugin({
+                typeormGetConnection: typeorm_1.getConnection,
+            }),
+        ],
         schema: yield type_graphql_1.buildSchema({
             resolvers: [
                 review_1.ReviewResolver,

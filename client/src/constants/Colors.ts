@@ -23,4 +23,6 @@ export enum COLORS {
   BLACK = "#000000",
   ORANGE = "#e94832",
   YELLOW = "#c7c148",
+  GRAY = "#c7c7c7",
+  BRIGHT_YELLOW = "#e9eb8a",
 }

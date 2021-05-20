@@ -43,10 +43,11 @@ export class ReviewResolver {
     @Arg("input") input: ReviewInput,
     @Ctx() { req }: MyContext
   ): Promise<Review> {
+    // TODO: Check if restaurant exists
+    console.log("Input: ", input);
     return Review.create({
       ...input,
       creatorId: req.session.userId,
-      restaurantId: input.restaurantId,
     }).save();
   }
 

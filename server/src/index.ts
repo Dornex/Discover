@@ -11,12 +11,13 @@ import connectRedis from "connect-redis";
 import { MyContext } from "./types";
 import cors from "cors";
 import { Client } from "@googlemaps/google-maps-services-js";
-import { createConnection } from "typeorm";
+import { createConnection, getConnection } from "typeorm";
 import { Review } from "./entities/Review";
 import { User } from "./entities/User";
 import { Restaurant } from "./entities/Restaurant";
 import { RestaurantResolver } from "./resolvers/restaurant";
 import { GoogleMapsResolver } from "./resolvers/googleMaps";
+import { ApolloServerLoaderPlugin } from "type-graphql-dataloader";
 
 const main = async () => {
   await createConnection({
@@ -64,6 +65,11 @@ const main = async () => {
   );
 
   const apolloServer = new ApolloServer({
+    plugins: [
+      ApolloServerLoaderPlugin({
+        typeormGetConnection: getConnection,
+      }),
+    ],
     schema: await buildSchema({
       resolvers: [
         ReviewResolver,
