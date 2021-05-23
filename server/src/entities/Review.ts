@@ -6,10 +6,8 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-  RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { Restaurant } from "./Restaurant";
@@ -31,7 +29,7 @@ export class Review extends BaseEntity {
   content: string;
 
   @Field()
-  @Column({ type: "int", default: 0 })
+  @Column({ type: "int", default: 1 })
   points!: number;
 
   @Field()
@@ -47,7 +45,9 @@ export class Review extends BaseEntity {
   @TypeormLoader(() => Restaurant, (review: Review) => review.restaurantId)
   restaurant: Restaurant;
 
-  @ManyToOne(() => User, (user) => user.reviews)
+  @Field(() => User)
+  @OneToOne(() => User, (user) => user.reviews)
+  @TypeormLoader(() => User, (review: Review) => review.creatorId)
   creator: User;
 
   @Field(() => String)

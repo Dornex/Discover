@@ -23,6 +23,9 @@ class ReviewInput {
 
   @Field()
   content: string;
+
+  @Field()
+  points: number;
 }
 
 @Resolver()
@@ -44,7 +47,6 @@ export class ReviewResolver {
     @Ctx() { req }: MyContext
   ): Promise<Review> {
     // TODO: Check if restaurant exists
-    console.log("Input: ", input);
     return Review.create({
       ...input,
       creatorId: req.session.userId,

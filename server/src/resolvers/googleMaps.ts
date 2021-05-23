@@ -1,4 +1,4 @@
-import { Arg, Ctx, Float, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Float, Mutation, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { GOOGLE_API_KEY } from "../constants";
 import { Restaurant } from "../entities/Restaurant";

@@ -3,5 +3,6 @@ mutation createReview($input: ReviewInput!) {
     title
     content
     createdAt
+    points
   }
 }

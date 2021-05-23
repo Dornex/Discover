@@ -28,11 +28,11 @@ const AddReviewModal: React.FC<{
 
   const handleButtonPress = async () => {
     console.log("Restaurant Id:", restaurantId);
-    createReview({ input: { content: review, restaurantId, title } }).then(
-      () => {
-        closeModal();
-      }
-    );
+    createReview({
+      input: { content: review, restaurantId, title, points: rating },
+    }).then(() => {
+      closeModal();
+    });
   };
 
   return (

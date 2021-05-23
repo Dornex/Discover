@@ -8,10 +8,14 @@ import BackButton from "../components/BackButton";
 import { useNavigation } from "@react-navigation/core";
 import SwitchButton from "../components/SwitchButton";
 import RestaurantDetailedInfo from "../components/RestaurantScreen/RestaurantDetailedInfo";
-import { useGetDetailedRestaurantMutation } from "../generated/graphql";
+import {
+  useGetDetailedRestaurantMutation,
+  useGetRestaurantReviewsQuery,
+} from "../generated/graphql";
 import { PriceRange } from "../components/PriceRange";
 import AddReviewModal from "../components/RestaurantScreen/AddReviewModal";
 import StyledText from "../components/StyledText";
+import RestaurantReviews from "../components/RestaurantScreen/RestaurantReviews";
 
 const Container = styled.View`
   flex-direction: column;
@@ -88,6 +92,11 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
   );
   const [modalVisible, setModalVisible] = useState(false);
 
+  const [{ data: reviews, fetching: reviewsFetching }] =
+    useGetRestaurantReviewsQuery({
+      variables: { id: restaurantId },
+    });
+
   const [
     { data: detailedRestaurantData, fetching: detailedRestaurantFetching },
     getDetailedRestaurant,
@@ -106,18 +115,38 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
         }
         return (
           <RestaurantDetailedInfo
-            address={detailedRestaurantData?.getDetailedRestaurant.address}
+            address={
+              detailedRestaurantData === undefined
+                ? ""
+                : detailedRestaurantData.getDetailedRestaurant.address
+            }
             phoneNumber={
-              detailedRestaurantData?.getDetailedRestaurant.phoneNumber
+              detailedRestaurantData === undefined
+                ? ""
+                : detailedRestaurantData?.getDetailedRestaurant.phoneNumber
             }
             priceLevel={priceRange}
             rating={rating}
-            website={detailedRestaurantData?.getDetailedRestaurant.website}
+            website={
+              detailedRestaurantData === undefined
+                ? ""
+                : detailedRestaurantData?.getDetailedRestaurant.website
+            }
           />
         );
       }
-      // case SECTIONS.REVIEWS:
-      //   return <RestaurantReviews />;
+      case SECTIONS.REVIEWS:
+        return (
+          <RestaurantReviews
+            reviews={
+              reviews !== undefined &&
+              reviews.restaurant !== undefined &&
+              reviews.restaurant !== null
+                ? reviews.restaurant.reviews
+                : []
+            }
+          />
+        );
       // case SECTIONS.MAP:
       //   return <RestaurantMap />;
       default:

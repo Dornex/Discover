@@ -99,6 +99,7 @@ export type Restaurant = {
   rating: Scalars['Float'];
   imageUrl: Scalars['String'];
   priceRange: Scalars['Int'];
+  reviews: Array<Review>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -119,6 +120,8 @@ export type Review = {
   points: Scalars['Float'];
   creatorId: Scalars['Float'];
   restaurantId: Scalars['String'];
+  restaurant: Restaurant;
+  creator: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -127,12 +130,14 @@ export type ReviewInput = {
   restaurantId: Scalars['String'];
   title: Scalars['String'];
   content: Scalars['String'];
+  points: Scalars['Float'];
 };
 
 export type User = {
   __typename?: 'User';
   id: Scalars['Int'];
   username: Scalars['String'];
+  reviews: Array<Review>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -157,7 +162,7 @@ export type CreateReviewMutation = (
   { __typename?: 'Mutation' }
   & { createReview: (
     { __typename?: 'Review' }
-    & Pick<Review, 'title' | 'content' | 'createdAt'>
+    & Pick<Review, 'title' | 'content' | 'createdAt' | 'points'>
   ) }
 );
 
@@ -236,6 +241,26 @@ export type RegisterMutation = (
   ) }
 );
 
+export type GetRestaurantReviewsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetRestaurantReviewsQuery = (
+  { __typename?: 'Query' }
+  & { restaurant?: Maybe<(
+    { __typename?: 'Restaurant' }
+    & { reviews: Array<(
+      { __typename?: 'Review' }
+      & Pick<Review, 'title' | 'creatorId' | 'createdAt' | 'content' | 'points'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username' | 'id'>
+      ) }
+    )> }
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -259,6 +284,7 @@ export const CreateReviewDocument = gql`
     title
     content
     createdAt
+    points
   }
 }
     `;
@@ -340,6 +366,27 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const GetRestaurantReviewsDocument = gql`
+    query getRestaurantReviews($id: String!) {
+  restaurant(id: $id) {
+    reviews {
+      title
+      creatorId
+      createdAt
+      content
+      points
+      creator {
+        username
+        id
+      }
+    }
+  }
+}
+    `;
+
+export function useGetRestaurantReviewsQuery(options: Omit<Urql.UseQueryArgs<GetRestaurantReviewsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetRestaurantReviewsQuery>({ query: GetRestaurantReviewsDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from "type-graphql";
+import { TypeormLoader } from "type-graphql-dataloader";
 import {
   BaseEntity,
   Column,
@@ -6,6 +7,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { Review } from "./Review";
@@ -24,7 +26,12 @@ export class User extends BaseEntity {
   @Column()
   password!: string;
 
+  @RelationId((user: User) => user.reviews)
+  reviewIds: number[];
+
+  @Field(() => [Review])
   @OneToMany(() => Review, (review) => review.creator)
+  @TypeormLoader(() => Review, (user: User) => user.reviewIds)
   reviews: Review[];
 
   @Field(() => String)
