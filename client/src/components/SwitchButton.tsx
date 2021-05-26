@@ -2,6 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components/native";
 import { COLORS } from "../constants/Colors";
 import { Text } from "react-native";
+import StyledText from "./StyledText";
 
 const Container = styled.TouchableOpacity`
   flex: 1;
@@ -15,23 +16,20 @@ const SwitchButton: React.FC<{
   onPress: () => void;
 }> = ({ active, text, onPress }) => {
   return (
-    <Container onPress={onPress}>
-      <Text
-        style={
-          active
-            ? {
-                borderBottomColor: COLORS.ORANGE,
-                borderBottomWidth: 4,
-                padding: 3,
-                fontSize: 18,
-                fontWeight: 700,
-                color: COLORS.ORANGE,
-              }
-            : { padding: 3, color: COLORS.BLACK, fontSize: 18, fontWeight: 700 }
-        }
+    <Container
+      onPress={onPress}
+      style={
+        active ? { borderBottomColor: COLORS.ORANGE, borderBottomWidth: 4 } : {}
+      }
+    >
+      <StyledText
+        color={active ? COLORS.ORANGE : COLORS.GRAY}
+        fontWeight="700"
+        fontSize={18}
+        style={{ padding: 3 }}
       >
         {text}
-      </Text>
+      </StyledText>
     </Container>
   );
 };

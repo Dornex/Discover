@@ -21,7 +21,7 @@ interface IStyledText extends Debuggable {
 const StyledText = styled.Text<IStyledText>`
   color: ${({ color }) => color};
   font-size: ${({ fontSize }) => fontSize}px;
-  font-weight: ${({ fontWeight }) => fontWeight};
+  font-weight: ${({ fontWeight }) => `${fontWeight}`};
   ${({ letterSpacing }) =>
     letterSpacing ? `letterSpacing: ${letterSpacing}px` : null}
   ${debugCss}

@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/core";
 import SwitchButton from "../components/SwitchButton";
 import RestaurantDetailedInfo from "../components/RestaurantScreen/RestaurantDetailedInfo";
 import {
+  Review,
   useGetDetailedRestaurantMutation,
   useGetRestaurantReviewsQuery,
 } from "../generated/graphql";
@@ -19,23 +20,25 @@ import RestaurantReviews from "../components/RestaurantScreen/RestaurantReviews"
 
 const Container = styled.View`
   flex-direction: column;
+  width: 100%;
 `;
 
-const RestaurantImageContainer = styled.View<{ height: number }>``;
+const RestaurantImageContainer = styled.View`
+  background-color: rgba(0, 0, 0, 0.9);
+`;
 
 const RestaurantImage = styled.Image<{ height: number }>`
   position: absolute;
   left: -150px;
   width: ${Dimensions.get("screen").width + 300}px;
-  height: ${({ height }) => `${height}px`};
-  border-bottom-left-radius: 50%;
-  border-bottom-right-radius: 50%;
-  filter: brightness(50%);
+  height: ${({ height }) => `${height}`}px;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
 `;
 
 const RestaurantDetails = styled.View<{ height: number }>`
   padding: 25px 28px;
-  height: ${({ height }) => `${height}px`};
+  height: ${({ height }) => `${height}`}px;
   justify-content: center;
   align-items: center;
 `;
@@ -53,6 +56,7 @@ const SectionSelectorContainer = styled.View`
 const AddReviewContainer = styled.TouchableOpacity`
   flex-direction: row;
   border: 2px solid ${COLORS.ORANGE};
+  background-color: white;
   padding: 5px;
   margin-top: 10px;
   border-radius: 5px;
@@ -86,7 +90,7 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
   } = route.params;
   const { goBack } = useNavigation();
 
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [imageSize, setImageSize] = useState({ width: 1, height: 1 });
   const [selectedSection, setSelectedSection] = useState<SECTIONS>(
     SECTIONS.DETAILS
   );
@@ -142,7 +146,7 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
               reviews !== undefined &&
               reviews.restaurant !== undefined &&
               reviews.restaurant !== null
-                ? reviews.restaurant.reviews
+                ? (reviews.restaurant.reviews as Review[])
                 : []
             }
           />
@@ -156,13 +160,8 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
 
   return (
     <SafeAreaView>
-      <Container style={{ width: Dimensions.get("screen").width }}>
-        <RestaurantImageContainer
-          height={
-            (imageSize.height * Dimensions.get("screen").width) /
-            imageSize.width
-          }
-        >
+      <Container>
+        <RestaurantImageContainer>
           <RestaurantImage
             height={
               (imageSize.height * Dimensions.get("screen").width) /
@@ -207,7 +206,10 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
               <Ionicons name="star" color={COLORS.WHITE} size={20} />
               {priceRange !== -1 ? (
                 <>
-                  <Text style={{ fontSize: 20, color: COLORS.WHITE }}> | </Text>
+                  <StyledText fontSize={20} color={COLORS.WHITE}>
+                    {" "}
+                    |{" "}
+                  </StyledText>
                   <PriceRangeContainer>
                     <PriceRange priceLevel={priceRange} />
                   </PriceRangeContainer>

@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Dimensions, TextInput, View } from "react-native";
 import { Modal, Text } from "react-native";
@@ -8,11 +9,19 @@ import Button from "../Button";
 import Rating from "../Rating";
 import StyledText from "../StyledText";
 
+const MainContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
 const Container = styled.View`
   background-color: white;
   padding: 10px 28px;
   align-items: center;
-  width: ${() => Dimensions.get("screen").width}px;
+  width: ${() => Dimensions.get("screen").width - 30}px;
+  border-radius: 10px;
 `;
 
 const AddReviewModal: React.FC<{
@@ -41,58 +50,78 @@ const AddReviewModal: React.FC<{
       onRequestClose={() => {
         closeModal();
       }}
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+      }}
       transparent
       animationType="fade"
     >
-      <Container>
-        <StyledText fontSize={18} fontWeight={700}>
-          Add a review
-        </StyledText>
+      <MainContainer>
+        <Container>
+          <Ionicons
+            name="close"
+            size={30}
+            style={{ position: "absolute", right: 10, top: 10 }}
+            onPress={() => {
+              closeModal();
+            }}
+          />
+          <StyledText fontSize={20} fontWeight={700}>
+            Add a review
+          </StyledText>
 
-        <StyledText fontSize={14} style={{ marginTop: 15, marginBottom: 5 }}>
-          Set the review title
-        </StyledText>
-        <TextInput
-          value={title}
-          onChangeText={(text) => setTitle(text)}
-          style={{
-            fontSize: 14,
-            width: "70%",
-            borderColor: COLORS.GRAY,
-            borderWidth: 1,
-            borderRadius: 5,
-            borderStyle: "solid",
-            padding: 1,
-          }}
-          numberOfLines={1}
-        />
+          <StyledText fontSize={16} style={{ marginTop: 15, marginBottom: 5 }}>
+            Set the review title
+          </StyledText>
+          <TextInput
+            value={title}
+            onChangeText={(text) => setTitle(text)}
+            style={{
+              fontSize: 14,
+              width: "70%",
+              borderColor: COLORS.GRAY,
+              borderWidth: 1,
+              borderRadius: 5,
+              borderStyle: "solid",
+              padding: 1,
+            }}
+            numberOfLines={1}
+          />
 
-        <StyledText style={{ marginTop: 20, marginBottom: 5 }} fontSize={14}>
-          Choose rating
-        </StyledText>
-        <Rating numberOfStars={5} rating={rating} setRating={setRating} />
-        <StyledText fontSize={14} style={{ marginTop: 20, marginBottom: 5 }}>
-          Tell us about the restaurant
-        </StyledText>
-        <TextInput
-          multiline={true}
-          value={review}
-          onChangeText={(text) => setReview(text)}
-          style={{
-            fontSize: 14,
-            width: "90%",
-            borderColor: COLORS.GRAY,
-            borderWidth: 1,
-            borderRadius: 5,
-            borderStyle: "solid",
-            padding: 1,
-          }}
-          numberOfLines={7}
-        />
-        <View style={{ marginTop: 10 }}>
-          <Button label="Add review" onPress={handleButtonPress} />
-        </View>
-      </Container>
+          <StyledText style={{ marginTop: 20, marginBottom: 5 }} fontSize={16}>
+            Choose rating
+          </StyledText>
+          <Rating numberOfStars={5} rating={rating} setRating={setRating} />
+          <StyledText fontSize={16} style={{ marginTop: 20, marginBottom: 5 }}>
+            Tell us about the restaurant
+          </StyledText>
+          <TextInput
+            multiline={true}
+            value={review}
+            onChangeText={(text) => setReview(text)}
+            style={{
+              fontSize: 14,
+              width: "90%",
+              borderColor: COLORS.GRAY,
+              borderWidth: 1,
+              borderRadius: 5,
+              borderStyle: "solid",
+              padding: 1,
+            }}
+            numberOfLines={7}
+          />
+          <View style={{ marginTop: 10 }}>
+            <Button
+              label="Add review"
+              onPress={handleButtonPress}
+              width={200}
+              height={30}
+              fontSize={16}
+            />
+          </View>
+        </Container>
+      </MainContainer>
     </Modal>
   );
 };

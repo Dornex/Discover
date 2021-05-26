@@ -39,8 +39,6 @@ const NearbyRestaurants = () => {
     getNearbyRestaurants({ latitude: 44.434486, longitude: 26.086292 });
   }, []);
 
-  console.log(data);
-
   const renderNearbyRestaurants: ListRenderItem<Restaurant> = ({ item }) => {
     return (
       <RestaurantContainer
