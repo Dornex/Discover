@@ -1,6 +1,8 @@
 query getRestaurantReviews($id: String!) {
   restaurant(id: $id) {
+    id
     reviews {
+      id
       title
       creatorId
       createdAt

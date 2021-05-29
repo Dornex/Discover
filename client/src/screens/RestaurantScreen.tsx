@@ -17,6 +17,8 @@ import { PriceRange } from "../components/PriceRange";
 import AddReviewModal from "../components/RestaurantScreen/AddReviewModal";
 import StyledText from "../components/StyledText";
 import RestaurantReviews from "../components/RestaurantScreen/RestaurantReviews";
+import { useSetRecoilState } from "recoil";
+import { restaurantReviewsState } from "../atoms/restaurantReviews";
 
 const Container = styled.View`
   flex-direction: column;
@@ -96,6 +98,8 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
   );
   const [modalVisible, setModalVisible] = useState(false);
 
+  const setRestaurantReviews = useSetRecoilState(restaurantReviewsState);
+
   const [{ data: reviews, fetching: reviewsFetching }] =
     useGetRestaurantReviewsQuery({
       variables: { id: restaurantId },
@@ -110,6 +114,17 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
     Image.getSize(imageUrl, (width, height) => setImageSize({ width, height }));
     getDetailedRestaurant({ restaurantId });
   }, []);
+
+  useEffect(() => {
+    if (
+      reviews !== undefined &&
+      reviews.restaurant !== undefined &&
+      reviews &&
+      reviews.restaurant
+    ) {
+      setRestaurantReviews(reviews.restaurant.reviews as Review[]);
+    }
+  }, [reviews]);
 
   const renderContent = () => {
     switch (selectedSection) {

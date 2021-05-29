@@ -7,8 +7,8 @@ import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 
 const Container = styled.View`
   flex: 1;
-  align-items: "center";
-  justify-content: "center";
+  align-items: center;
+  justify-content: center;
   border: 1px solid red;
 `;
 
@@ -26,7 +26,7 @@ const ProfileScreen = () => {
   } else {
     body = (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Hello, {data.me.username}</Text>{" "}
+        <Text>Hello, {data.me.username}</Text>
         <Button
           label="LOGOUT"
           onPress={() => {

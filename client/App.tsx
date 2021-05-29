@@ -16,6 +16,7 @@ import {
   RegisterMutation,
   useMeQuery,
 } from "./src/generated/graphql";
+import { RecoilRoot } from "recoil";
 
 function betterUpdateQuery<Result, Query>(
   cache: Cache,
@@ -85,18 +86,18 @@ const client = createClient({
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
-
   if (!isLoadingComplete) {
     return <SplashScreen />;
   } else {
     return (
-      <Provider value={client}>
-        <SafeAreaProvider>
-          <Navigation />
-          <StatusBar />
-        </SafeAreaProvider>
-      </Provider>
+      <RecoilRoot>
+        <Provider value={client}>
+          <SafeAreaProvider>
+            <Navigation />
+            <StatusBar />
+          </SafeAreaProvider>
+        </Provider>
+      </RecoilRoot>
     );
   }
 }

@@ -47,6 +47,7 @@ export class ReviewResolver {
     @Ctx() { req }: MyContext
   ): Promise<Review> {
     // TODO: Check if restaurant exists
+    console.log(input);
     return Review.create({
       ...input,
       creatorId: req.session.userId,

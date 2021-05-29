@@ -2,9 +2,11 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Dimensions, TextInput, View } from "react-native";
 import { Modal, Text } from "react-native";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components/native";
+import { restaurantReviewsState } from "../../atoms/restaurantReviews";
 import { COLORS } from "../../constants/Colors";
-import { useCreateReviewMutation } from "../../generated/graphql";
+import { Review, useCreateReviewMutation } from "../../generated/graphql";
 import Button from "../Button";
 import Rating from "../Rating";
 import StyledText from "../StyledText";
@@ -35,11 +37,18 @@ const AddReviewModal: React.FC<{
 
   const [{ data, fetching }, createReview] = useCreateReviewMutation();
 
+  const [restaurantReviews, setRestaurantReviews] = useRecoilState(
+    restaurantReviewsState
+  );
+
   const handleButtonPress = async () => {
-    console.log("Restaurant Id:", restaurantId);
     createReview({
       input: { content: review, restaurantId, title, points: rating },
-    }).then(() => {
+    }).then((review) => {
+      setRestaurantReviews([
+        ...restaurantReviews,
+        { ...review.data?.createReview } as Review,
+      ]);
       closeModal();
     });
   };

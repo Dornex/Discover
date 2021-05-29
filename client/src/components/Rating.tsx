@@ -13,44 +13,55 @@ const Container = styled.View`
 
 interface IRating {
   rating: number;
-  setRating: (idx: number) => void;
+  setRating?: (idx: number) => void;
   numberOfStars: number;
+  starSize?: number;
 }
 
 interface IStar {
   index: number;
-  setRating: (rating: number) => void;
+  setRating?: (rating: number) => void;
+  starSize?: number;
 }
 
-const FullStar: React.FC<IStar> = ({ index, setRating }) => {
+const FullStar: React.FC<IStar> = ({ index, setRating, starSize }) => {
   return (
     <Ionicons
       onPress={() => {
-        setRating(index);
+        if (setRating) {
+          setRating(index);
+        }
       }}
       style={{ padding: 3 }}
       name="star"
       color={COLORS.BRIGHT_YELLOW}
-      size={STAR_SIZE}
+      size={starSize ? starSize : STAR_SIZE}
     />
   );
 };
 
-const EmptyStar: React.FC<IStar> = ({ index, setRating }) => {
+const EmptyStar: React.FC<IStar> = ({ index, setRating, starSize }) => {
   return (
     <Ionicons
       onPress={() => {
-        setRating(index);
+        if (setRating) {
+          setRating(index);
+        }
       }}
       style={{ padding: 3 }}
       name="star"
       color={COLORS.GRAY}
-      size={STAR_SIZE}
+      size={starSize ? starSize : STAR_SIZE}
     />
   );
 };
 
-const Rating: React.FC<IRating> = ({ rating, setRating, numberOfStars }) => {
+const Rating: React.FC<IRating> = ({
+  rating,
+  setRating,
+  numberOfStars,
+  starSize,
+}) => {
   const renderStars = () => {
     const starsArr = new Array(numberOfStars).fill(0).map((_, index) => {
       return index;
@@ -64,6 +75,7 @@ const Rating: React.FC<IRating> = ({ rating, setRating, numberOfStars }) => {
                 key={`full-star-${value}`}
                 index={value + 1}
                 setRating={setRating}
+                starSize={starSize}
               />
             );
           } else {
@@ -71,6 +83,7 @@ const Rating: React.FC<IRating> = ({ rating, setRating, numberOfStars }) => {
               <EmptyStar
                 key={`empty-start-${value}`}
                 index={value + 1}
+                starSize={starSize}
                 setRating={setRating}
               />
             );

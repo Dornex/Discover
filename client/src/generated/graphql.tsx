@@ -162,7 +162,11 @@ export type CreateReviewMutation = (
   { __typename?: 'Mutation' }
   & { createReview: (
     { __typename?: 'Review' }
-    & Pick<Review, 'title' | 'content' | 'createdAt' | 'points'>
+    & Pick<Review, 'id' | 'title' | 'content' | 'createdAt' | 'points'>
+    & { creator: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username'>
+    ) }
   ) }
 );
 
@@ -250,9 +254,10 @@ export type GetRestaurantReviewsQuery = (
   { __typename?: 'Query' }
   & { restaurant?: Maybe<(
     { __typename?: 'Restaurant' }
+    & Pick<Restaurant, 'id'>
     & { reviews: Array<(
       { __typename?: 'Review' }
-      & Pick<Review, 'title' | 'creatorId' | 'createdAt' | 'content' | 'points'>
+      & Pick<Review, 'id' | 'title' | 'creatorId' | 'createdAt' | 'content' | 'points'>
       & { creator: (
         { __typename?: 'User' }
         & Pick<User, 'username' | 'id'>
@@ -281,10 +286,15 @@ export const RegularUserFragmentDoc = gql`
 export const CreateReviewDocument = gql`
     mutation createReview($input: ReviewInput!) {
   createReview(input: $input) {
+    id
     title
     content
     createdAt
     points
+    creator {
+      id
+      username
+    }
   }
 }
     `;
@@ -370,7 +380,9 @@ export function useRegisterMutation() {
 export const GetRestaurantReviewsDocument = gql`
     query getRestaurantReviews($id: String!) {
   restaurant(id: $id) {
+    id
     reviews {
+      id
       title
       creatorId
       createdAt

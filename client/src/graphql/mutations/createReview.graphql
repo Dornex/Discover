@@ -1,8 +1,13 @@
 mutation createReview($input: ReviewInput!) {
   createReview(input: $input) {
+    id
     title
     content
     createdAt
     points
+    creator {
+      id
+      username
+    }
   }
 }

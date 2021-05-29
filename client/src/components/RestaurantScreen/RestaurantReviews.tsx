@@ -1,42 +1,56 @@
 import React from "react";
 import { FlatList, ListRenderItem, View } from "react-native";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components/native";
+import { restaurantReviewsState } from "../../atoms/restaurantReviews";
 import { COLORS } from "../../constants/Colors";
 import { Review } from "../../generated/graphql";
+import { monthToString } from "../../helpers";
+import Line from "../Line";
+import Rating from "../Rating";
 import StyledText from "../StyledText";
 
 const Container = styled.View`
   width: 100%;
   margin-top: 20px;
+  padding: 0 28px;
 `;
 
 const ItemContainer = styled.View`
   flex-direction: column;
   width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;
 
 const ItemHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
 `;
 
-const RestaurantReviews: React.FC<{ reviews: Review[] }> = ({ reviews }) => {
+const RestaurantReviews: React.FC = () => {
+  const reviews = useRecoilValue(restaurantReviewsState);
+
   const renderItem: ListRenderItem<Review> = ({ item }) => {
-    const date = new Date(item.createdAt);
+    const date = new Date(parseInt(item.createdAt));
     return (
       <ItemContainer>
         <ItemHeader>
-          <View>
+          <View style={{ justifyContent: "space-between" }}>
             <StyledText fontSize={14} fontWeight={700}>
               {item.creator.username}
             </StyledText>
-            <StyledText
-              fontSize={14}
-              color={COLORS.GRAY}
-            >{`${date.getMonth()} ${date.getDate()}, ${date.getFullYear()}`}</StyledText>
+            <StyledText fontSize={14} color={COLORS.GRAY}>{`${
+              monthToString[date.getMonth()]
+            } ${date.getDate()}, ${date.getFullYear()}`}</StyledText>
           </View>
-          <StyledText fontSize={14}>{item.points}</StyledText>
+          <Rating starSize={18} numberOfStars={5} rating={item.points} />
         </ItemHeader>
+        <StyledText fontSize={14} color={COLORS.GRAY}>
+          {item.content}
+        </StyledText>
       </ItemContainer>
     );
   };
@@ -47,8 +61,8 @@ const RestaurantReviews: React.FC<{ reviews: Review[] }> = ({ reviews }) => {
         data={reviews}
         renderItem={renderItem}
         keyExtractor={(item) => `review-${item.id}`}
-        horizontal
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={Line}
       />
     </Container>
   );
