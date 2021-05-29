@@ -32,6 +32,7 @@ const client = createClient({
   fetchOptions: {
     credentials: "include",
   },
+  requestPolicy: "cache-and-network",
   exchanges: [
     dedupExchange,
     cacheExchange({
