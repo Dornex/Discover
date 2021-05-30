@@ -2,7 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { ListRenderItem, Text, FlatList } from "react-native";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components/native";
+import { userLocationState } from "../../atoms/userLocation";
 import { COLORS } from "../../constants/Colors";
 import {
   Restaurant,
@@ -35,10 +37,17 @@ const NearbyRestaurants = () => {
   const { navigate } = useNavigation();
 
   const [{ data }, getNearbyRestaurants] = useGetNearbyRestaurantsMutation();
+  const userLocation = useRecoilValue(userLocationState);
 
   useEffect(() => {
-    getNearbyRestaurants({ latitude: 44.434486, longitude: 26.086292 });
-  }, []);
+    if (userLocation) {
+      console.log(userLocation.coords);
+      getNearbyRestaurants({
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+      });
+    }
+  }, [userLocation]);
 
   const renderNearbyRestaurants: ListRenderItem<Restaurant> = ({ item }) => {
     return (

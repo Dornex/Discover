@@ -1,10 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import SplashScreen from "./src/components/SplashScreen";
 import { Provider, createClient, dedupExchange, fetchExchange } from "urql";
 import useCachedResources from "./src/hooks/useCachedResources";
-import useColorScheme from "./src/hooks/useColorScheme";
 import Navigation from "./src/navigation";
 import { cacheExchange, Cache, QueryInput } from "@urql/exchange-graphcache";
 import {
@@ -12,9 +11,7 @@ import {
   LogoutMutation,
   MeDocument,
   MeQuery,
-  Query,
   RegisterMutation,
-  useMeQuery,
 } from "./src/generated/graphql";
 import { RecoilRoot } from "recoil";
 
@@ -87,6 +84,7 @@ const client = createClient({
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
+
   if (!isLoadingComplete) {
     return <SplashScreen />;
   } else {

@@ -21,8 +21,8 @@ import StyledText from "../components/StyledText";
 import RestaurantReviews from "../components/RestaurantScreen/RestaurantReviews";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { restaurantReviewsState } from "../atoms/restaurantReviews";
-import FavouriteRestaurants from "../components/HomeScreen/FavouriteRestaurants";
 import { favouriteRestaurantsState } from "../atoms/favouriteRestaurants";
+import RestaurantMap from "../components/RestaurantScreen/RestaurantMap";
 
 const Container = styled.View`
   flex-direction: column;
@@ -33,18 +33,16 @@ const RestaurantImageContainer = styled.View`
   background-color: rgba(0, 0, 0, 0.9);
 `;
 
-const RestaurantImage = styled.ImageBackground<{ height: number }>`
+const RestaurantImage = styled.ImageBackground`
   position: absolute;
-  left: -150px;
-  width: ${Dimensions.get("screen").width + 300}px;
-  height: ${({ height }) => `${height}`}px;
-  border-bottom-left-radius: 25px;
-  border-bottom-right-radius: 25px;
+  width: ${Dimensions.get("screen").width}px;
+  height: 250px;
+  border-radius: 50px;
 `;
 
-const RestaurantDetails = styled.View<{ height: number }>`
+const RestaurantDetails = styled.View`
   padding: 25px 28px;
-  height: ${({ height }) => `${height}`}px;
+  height: 250px;
   justify-content: center;
   align-items: center;
 `;
@@ -212,8 +210,8 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
             }
           />
         );
-      // case SECTIONS.MAP:
-      //   return <RestaurantMap />;
+      case SECTIONS.MAP:
+        return <RestaurantMap latitude={latitude} longitude={longitude} />;
       default:
         return null;
     }
@@ -223,13 +221,7 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
     <SafeAreaView>
       <Container>
         <RestaurantImageContainer>
-          <RestaurantImage
-            height={
-              (imageSize.height * Dimensions.get("screen").width) /
-              imageSize.width
-            }
-            source={{ uri: imageUrl }}
-          >
+          <RestaurantImage resizeMode="cover" source={{ uri: imageUrl }}>
             <View
               style={{
                 flex: 1,
