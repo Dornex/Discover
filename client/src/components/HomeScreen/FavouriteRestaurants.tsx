@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import { ListRenderItem, Text, FlatList } from "react-native";
+import { useRecoilState } from "recoil";
 import styled from "styled-components/native";
+import { favouriteRestaurantsState } from "../../atoms/favouriteRestaurants";
 import { COLORS } from "../../constants/Colors";
 import {
   Restaurant,
@@ -35,6 +37,16 @@ const FavouriteRestaurants = () => {
   const { navigate } = useNavigation();
 
   const [{ data }] = useGetFavouriteRestaurantsQuery();
+
+  const [favouriteRestaurants, setFavouriteRestaurants] = useRecoilState(
+    favouriteRestaurantsState
+  );
+
+  useEffect(() => {
+    if (data?.getFavouriteRestaurants) {
+      setFavouriteRestaurants(data.getFavouriteRestaurants as Restaurant[]);
+    }
+  }, [data]);
 
   const renderFavouriteRestaurant: ListRenderItem<Restaurant> = ({ item }) => {
     return (
@@ -91,7 +103,7 @@ const FavouriteRestaurants = () => {
         keyExtractor={(item, index) =>
           `favourite-restaurants-${item.id}-${index}`
         }
-        data={data.getFavouriteRestaurants as Restaurant[]}
+        data={favouriteRestaurants}
         showsHorizontalScrollIndicator={false}
         horizontal={true}
         renderItem={renderFavouriteRestaurant}

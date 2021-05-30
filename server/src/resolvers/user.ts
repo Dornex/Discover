@@ -132,7 +132,7 @@ export class UserResolver {
   }
 
   @Query(() => [Restaurant])
-  // @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth)
   async getFavouriteRestaurants(
     @Ctx() {req}: MyContext): Promise<Restaurant[]> {
       const user = await User.findOne(req.session.userId);

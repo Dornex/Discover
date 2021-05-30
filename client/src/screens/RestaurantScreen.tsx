@@ -19,8 +19,10 @@ import { PriceRange } from "../components/PriceRange";
 import AddReviewModal from "../components/RestaurantScreen/AddReviewModal";
 import StyledText from "../components/StyledText";
 import RestaurantReviews from "../components/RestaurantScreen/RestaurantReviews";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { restaurantReviewsState } from "../atoms/restaurantReviews";
+import FavouriteRestaurants from "../components/HomeScreen/FavouriteRestaurants";
+import { favouriteRestaurantsState } from "../atoms/favouriteRestaurants";
 
 const Container = styled.View`
   flex-direction: column;
@@ -93,19 +95,26 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
   } = route.params;
   const { goBack } = useNavigation();
 
+  //#region State
   const [imageSize, setImageSize] = useState({ width: 1, height: 1 });
   const [selectedSection, setSelectedSection] = useState<SECTIONS>(
     SECTIONS.DETAILS
   );
   const [modalVisible, setModalVisible] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
+  //#endregion
 
+  //#region Recoil State
   const setRestaurantReviews = useSetRecoilState(restaurantReviewsState);
+  const [favouriteRestaurants, setFavouriteRestaurants] = useRecoilState(
+    favouriteRestaurantsState
+  );
+  //#endregion
 
+  //#region GRAPHQL
   const [{ data: reviews }] = useGetRestaurantReviewsQuery({
     variables: { id: restaurantId },
   });
-
   const [
     { data: detailedRestaurantData, fetching: detailedRestaurantFetching },
     getDetailedRestaurant,
@@ -114,6 +123,7 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
   const [{ data: isFavouriteData }] = useIsRestaurantFavouriteQuery({
     variables: { id: restaurantId },
   });
+  //#endregion
 
   useEffect(() => {
     Image.getSize(imageUrl, (width, height) => setImageSize({ width, height }));
@@ -136,6 +146,30 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
       setRestaurantReviews(reviews.restaurant.reviews as Review[]);
     }
   }, [reviews]);
+
+  const handleFavouriteState = () => {
+    if (isFavourite) {
+      setFavouriteRestaurants([
+        ...favouriteRestaurants.filter((rest) => rest.id !== restaurantId),
+      ]);
+    } else {
+      setFavouriteRestaurants([
+        ...favouriteRestaurants,
+        {
+          id: restaurantId,
+          name,
+          longitude,
+          latitude,
+          rating,
+          imageUrl,
+          priceRange,
+          updatedAt: "",
+          createdAt: "",
+          reviews: [],
+        },
+      ]);
+    }
+  };
 
   const renderContent = () => {
     switch (selectedSection) {
@@ -219,6 +253,7 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
           onPress={() => {
             toggleFavourite({ id: restaurantId });
             setIsFavourite(!isFavourite);
+            handleFavouriteState();
           }}
         >
           <AntDesign
@@ -306,7 +341,6 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
         restaurantId={restaurantId}
         closeModal={() => {
           setModalVisible(false);
-          console.log("Closed the modal!");
         }}
         modalVisible={modalVisible}
       />
