@@ -26,21 +26,6 @@ export class GoogleMapsResolver {
     });
 
     const restaurants = nearbyPlaces.data.results.map(async (place) => {
-      getConnection()
-        .createQueryBuilder()
-        .insert()
-        .into(Restaurant)
-        .values({
-          id: place.place_id,
-          latitude: place.geometry?.location.lat,
-          longitude: place.geometry?.location.lng,
-          name: place.name,
-          rating: place.rating !== undefined ? place.rating : 1,
-          priceRange: place.price_level !== undefined ? place.price_level : -1
-        })
-        .onConflict(`("id") DO NOTHING`)
-        .execute();
-
       let photo;
       if (place.photos !== undefined) {
         photo = await googleClient.placePhoto({
@@ -53,6 +38,22 @@ export class GoogleMapsResolver {
           responseType: "stream",
         });
       }
+
+      getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(Restaurant)
+      .values({
+        id: place.place_id,
+        latitude: place.geometry?.location.lat,
+        longitude: place.geometry?.location.lng,
+        name: place.name,
+        imageUrl: photo ? photo.data.responseUrl : "",
+        rating: place.rating !== undefined ? place.rating : 1,
+        priceRange: place.price_level !== undefined ? place.price_level : -1
+      })
+      .onConflict(`("id") DO NOTHING`)
+      .execute();
 
       return {
         id: place.place_id,

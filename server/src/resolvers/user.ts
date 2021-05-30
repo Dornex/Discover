@@ -137,14 +137,11 @@ export class UserResolver {
     @Ctx() {req}: MyContext): Promise<Restaurant[]> {
       const user = await User.findOne(req.session.userId);
 
-      console.log(user);
       if (user) {
         const restaurants: Restaurant[] = await Restaurant.findByIds(user.favouriteRestaurants);
-        console.log("Restaurants:", restaurants);
         return restaurants;
       }
 
-      console.log("Am ajuns aici!");
       return [];
     }
 }

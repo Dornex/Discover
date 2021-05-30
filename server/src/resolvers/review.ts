@@ -47,7 +47,6 @@ export class ReviewResolver {
     @Ctx() { req }: MyContext
   ): Promise<Review> {
     // TODO: Check if restaurant exists
-    console.log(input);
     return Review.create({
       ...input,
       creatorId: req.session.userId,
@@ -74,5 +73,15 @@ export class ReviewResolver {
   async deleteReview(@Arg("id", () => Int) id: number): Promise<boolean> {
     await Review.delete(id);
     return true;
+  }
+
+  @Mutation(() => [Review], {nullable: true})
+  async recentReviews(): Promise<Review[] | null> {
+    console.log("Recent reviews:", await Review.find({}))
+    return await Review.find({
+      order: {
+        createdAt: "DESC"
+      }
+    })
   }
 }

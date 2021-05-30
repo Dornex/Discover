@@ -25,6 +25,7 @@ export type Mutation = {
   createReview: Review;
   updateReview?: Maybe<Review>;
   deleteReview: Scalars['Boolean'];
+  recentReviews?: Maybe<Array<Review>>;
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -82,7 +83,7 @@ export type Query = {
   reviews: Array<Review>;
   review?: Maybe<Review>;
   me?: Maybe<User>;
-  getFavouriteRestaurants?: Maybe<Array<Restaurant>>;
+  getFavouriteRestaurants: Array<Restaurant>;
   restaurants: Array<Restaurant>;
   restaurant?: Maybe<Restaurant>;
   isFavourite: Scalars['Boolean'];
@@ -109,9 +110,9 @@ export type Restaurant = {
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
   name: Scalars['String'];
-  rating: Scalars['Float'];
-  imageUrl: Scalars['String'];
-  priceRange: Scalars['Int'];
+  rating?: Maybe<Scalars['Float']>;
+  imageUrl?: Maybe<Scalars['String']>;
+  priceRange?: Maybe<Scalars['Int']>;
   reviews: Array<Review>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -211,6 +212,24 @@ export type GetNearbyRestaurantsMutation = (
   )>> }
 );
 
+export type GetRecentReviewsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetRecentReviewsMutation = (
+  { __typename?: 'Mutation' }
+  & { recentReviews?: Maybe<Array<(
+    { __typename?: 'Review' }
+    & Pick<Review, 'id' | 'createdAt' | 'title' | 'points' | 'content'>
+    & { creator: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username'>
+    ), restaurant: (
+      { __typename?: 'Restaurant' }
+      & Pick<Restaurant, 'id' | 'name' | 'latitude' | 'longitude' | 'rating' | 'imageUrl' | 'priceRange'>
+    ) }
+  )>> }
+);
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -274,10 +293,10 @@ export type GetFavouriteRestaurantsQueryVariables = Exact<{ [key: string]: never
 
 export type GetFavouriteRestaurantsQuery = (
   { __typename?: 'Query' }
-  & { getFavouriteRestaurants?: Maybe<Array<(
+  & { getFavouriteRestaurants: Array<(
     { __typename?: 'Restaurant' }
     & Pick<Restaurant, 'id' | 'name' | 'rating' | 'latitude' | 'longitude' | 'imageUrl' | 'priceRange'>
-  )>> }
+  )> }
 );
 
 export type GetRestaurantReviewsQueryVariables = Exact<{
@@ -378,6 +397,34 @@ export const GetNearbyRestaurantsDocument = gql`
 
 export function useGetNearbyRestaurantsMutation() {
   return Urql.useMutation<GetNearbyRestaurantsMutation, GetNearbyRestaurantsMutationVariables>(GetNearbyRestaurantsDocument);
+};
+export const GetRecentReviewsDocument = gql`
+    mutation getRecentReviews {
+  recentReviews {
+    id
+    createdAt
+    title
+    points
+    content
+    creator {
+      id
+      username
+    }
+    restaurant {
+      id
+      name
+      latitude
+      longitude
+      rating
+      imageUrl
+      priceRange
+    }
+  }
+}
+    `;
+
+export function useGetRecentReviewsMutation() {
+  return Urql.useMutation<GetRecentReviewsMutation, GetRecentReviewsMutationVariables>(GetRecentReviewsDocument);
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {

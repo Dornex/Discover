@@ -1,0 +1,22 @@
+mutation getRecentReviews {
+  recentReviews {
+    id
+    createdAt
+    title
+    points
+    content
+    creator {
+      id
+      username
+    }
+    restaurant {
+      id
+      name
+      latitude
+      longitude
+      rating
+      imageUrl
+      priceRange
+    }
+  }
+}
