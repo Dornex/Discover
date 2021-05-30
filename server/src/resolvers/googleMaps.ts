@@ -35,6 +35,8 @@ export class GoogleMapsResolver {
           latitude: place.geometry?.location.lat,
           longitude: place.geometry?.location.lng,
           name: place.name,
+          rating: place.rating !== undefined ? place.rating : 1,
+          priceRange: place.price_level !== undefined ? place.price_level : -1
         })
         .onConflict(`("id") DO NOTHING`)
         .execute();

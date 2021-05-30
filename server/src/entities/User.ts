@@ -34,6 +34,14 @@ export class User extends BaseEntity {
   @TypeormLoader(() => Review, (user: User) => user.reviewIds)
   reviews: Review[];
 
+  @Field(() => [String])
+  @Column({
+    type: 'varchar',
+    array: true,
+    default: []
+  })
+  favouriteRestaurants: String[];
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date;

@@ -1,0 +1,11 @@
+query getFavouriteRestaurants {
+  getFavouriteRestaurants {
+    id
+    name
+    rating
+    latitude
+    longitude
+    imageUrl
+    priceRange
+  }
+}

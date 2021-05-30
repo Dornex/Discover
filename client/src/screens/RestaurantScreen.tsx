@@ -1,6 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
-import { Dimensions, Text, Image, View } from "react-native";
+import { Dimensions, Text, Image, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import { COLORS } from "../constants/Colors";
@@ -12,6 +12,8 @@ import {
   Review,
   useGetDetailedRestaurantMutation,
   useGetRestaurantReviewsQuery,
+  useIsRestaurantFavouriteQuery,
+  useToggleFavouriteMutation,
 } from "../generated/graphql";
 import { PriceRange } from "../components/PriceRange";
 import AddReviewModal from "../components/RestaurantScreen/AddReviewModal";
@@ -29,7 +31,7 @@ const RestaurantImageContainer = styled.View`
   background-color: rgba(0, 0, 0, 0.9);
 `;
 
-const RestaurantImage = styled.Image<{ height: number }>`
+const RestaurantImage = styled.ImageBackground<{ height: number }>`
   position: absolute;
   left: -150px;
   width: ${Dimensions.get("screen").width + 300}px;
@@ -58,7 +60,6 @@ const SectionSelectorContainer = styled.View`
 const AddReviewContainer = styled.TouchableOpacity`
   flex-direction: row;
   border: 2px solid ${COLORS.ORANGE};
-  background-color: white;
   padding: 5px;
   margin-top: 10px;
   border-radius: 5px;
@@ -97,23 +98,33 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
     SECTIONS.DETAILS
   );
   const [modalVisible, setModalVisible] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
 
   const setRestaurantReviews = useSetRecoilState(restaurantReviewsState);
 
-  const [{ data: reviews, fetching: reviewsFetching }] =
-    useGetRestaurantReviewsQuery({
-      variables: { id: restaurantId },
-    });
+  const [{ data: reviews }] = useGetRestaurantReviewsQuery({
+    variables: { id: restaurantId },
+  });
 
   const [
     { data: detailedRestaurantData, fetching: detailedRestaurantFetching },
     getDetailedRestaurant,
   ] = useGetDetailedRestaurantMutation();
+  const [, toggleFavourite] = useToggleFavouriteMutation();
+  const [{ data: isFavouriteData }] = useIsRestaurantFavouriteQuery({
+    variables: { id: restaurantId },
+  });
 
   useEffect(() => {
     Image.getSize(imageUrl, (width, height) => setImageSize({ width, height }));
     getDetailedRestaurant({ restaurantId });
   }, []);
+
+  useEffect(() => {
+    if (isFavouriteData && isFavouriteData?.isFavourite !== null) {
+      setIsFavourite(isFavouriteData.isFavourite);
+    }
+  }, [isFavouriteData?.isFavourite]);
 
   useEffect(() => {
     if (
@@ -159,6 +170,7 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
           <RestaurantReviews
             reviews={
               reviews !== undefined &&
+              reviews !== null &&
               reviews.restaurant !== undefined &&
               reviews.restaurant !== null
                 ? (reviews.restaurant.reviews as Review[])
@@ -183,7 +195,16 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
               imageSize.width
             }
             source={{ uri: imageUrl }}
-          />
+          >
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "rgba(0, 0, 0, .6)",
+              }}
+            ></View>
+          </RestaurantImage>
         </RestaurantImageContainer>
 
         <BackButton
@@ -191,6 +212,21 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
             goBack();
           }}
         />
+
+        <TouchableOpacity
+          style={{ position: "absolute", top: 20, right: 10, zIndex: 10 }}
+          hitSlop={{ left: 20, top: 20, right: 20, bottom: 20 }}
+          onPress={() => {
+            toggleFavourite({ id: restaurantId });
+            setIsFavourite(!isFavourite);
+          }}
+        >
+          <AntDesign
+            name="heart"
+            size={26}
+            color={isFavourite ? COLORS.ORANGE : COLORS.WHITE}
+          />
+        </TouchableOpacity>
 
         <RestaurantDetails
           height={
@@ -216,9 +252,8 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
               justifyContent: "center",
             }}
           >
-            <StyledText color={COLORS.WHITE} fontSize={18}>
-              {rating}
-              <Ionicons name="star" color={COLORS.WHITE} size={20} />
+            <StyledText color={COLORS.WHITE} fontSize={20}>
+              {rating} <Ionicons name="star" color={COLORS.WHITE} size={24} />
               {priceRange !== -1 ? (
                 <>
                   <StyledText fontSize={20} color={COLORS.WHITE}>

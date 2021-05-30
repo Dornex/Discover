@@ -47,7 +47,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         host: "207.154.217.69",
     });
     app.use(cors_1.default({
-        origin: "http://localhost:19006",
+        origin: "http://localhost:19002",
         credentials: true,
     }));
     const googleClient = new google_maps_services_js_1.Client();

@@ -1,0 +1,3 @@
+mutation toggleFavourite($id: String!) {
+  toggleFavourite(id: $id)
+}

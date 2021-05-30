@@ -1,18 +1,16 @@
 import React from "react";
-import styled from "styled-components/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import FavouriteRestaurants from "../components/HomeScreen/FavouriteRestaurants";
 import HomeScreenHeader from "../components/HomeScreen/HomeScreenHeader";
 import NearbyRestaurants from "../components/HomeScreen/NearbyRestaurants";
 
-const Container = styled.View`
-  flex: 1;
-`;
-
 const HomeScreen = () => {
   return (
-    <Container>
+    <SafeAreaView>
       <HomeScreenHeader />
       <NearbyRestaurants />
-    </Container>
+      <FavouriteRestaurants />
+    </SafeAreaView>
   );
 };
 

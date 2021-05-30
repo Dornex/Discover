@@ -28,6 +28,7 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  toggleFavourite?: Maybe<Scalars['Boolean']>;
   getNearbyRestaurants?: Maybe<Array<Restaurant>>;
   getDetailedRestaurant: RestaurantDetails;
 };
@@ -61,6 +62,11 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationToggleFavouriteArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationGetNearbyRestaurantsArgs = {
   longitude: Scalars['Float'];
   latitude: Scalars['Float'];
@@ -76,8 +82,10 @@ export type Query = {
   reviews: Array<Review>;
   review?: Maybe<Review>;
   me?: Maybe<User>;
+  getFavouriteRestaurants?: Maybe<Array<Restaurant>>;
   restaurants: Array<Restaurant>;
   restaurant?: Maybe<Restaurant>;
+  isFavourite: Scalars['Boolean'];
 };
 
 
@@ -87,6 +95,11 @@ export type QueryReviewArgs = {
 
 
 export type QueryRestaurantArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryIsFavouriteArgs = {
   id: Scalars['String'];
 };
 
@@ -138,6 +151,7 @@ export type User = {
   id: Scalars['Int'];
   username: Scalars['String'];
   reviews: Array<Review>;
+  favouriteRestaurants: Array<Scalars['String']>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -245,6 +259,27 @@ export type RegisterMutation = (
   ) }
 );
 
+export type ToggleFavouriteMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type ToggleFavouriteMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'toggleFavourite'>
+);
+
+export type GetFavouriteRestaurantsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFavouriteRestaurantsQuery = (
+  { __typename?: 'Query' }
+  & { getFavouriteRestaurants?: Maybe<Array<(
+    { __typename?: 'Restaurant' }
+    & Pick<Restaurant, 'id' | 'name' | 'rating' | 'latitude' | 'longitude' | 'imageUrl' | 'priceRange'>
+  )>> }
+);
+
 export type GetRestaurantReviewsQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -264,6 +299,16 @@ export type GetRestaurantReviewsQuery = (
       ) }
     )> }
   )> }
+);
+
+export type IsRestaurantFavouriteQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type IsRestaurantFavouriteQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'isFavourite'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -377,6 +422,32 @@ export const RegisterDocument = gql`
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
+export const ToggleFavouriteDocument = gql`
+    mutation toggleFavourite($id: String!) {
+  toggleFavourite(id: $id)
+}
+    `;
+
+export function useToggleFavouriteMutation() {
+  return Urql.useMutation<ToggleFavouriteMutation, ToggleFavouriteMutationVariables>(ToggleFavouriteDocument);
+};
+export const GetFavouriteRestaurantsDocument = gql`
+    query getFavouriteRestaurants {
+  getFavouriteRestaurants {
+    id
+    name
+    rating
+    latitude
+    longitude
+    imageUrl
+    priceRange
+  }
+}
+    `;
+
+export function useGetFavouriteRestaurantsQuery(options: Omit<Urql.UseQueryArgs<GetFavouriteRestaurantsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetFavouriteRestaurantsQuery>({ query: GetFavouriteRestaurantsDocument, ...options });
+};
 export const GetRestaurantReviewsDocument = gql`
     query getRestaurantReviews($id: String!) {
   restaurant(id: $id) {
@@ -399,6 +470,15 @@ export const GetRestaurantReviewsDocument = gql`
 
 export function useGetRestaurantReviewsQuery(options: Omit<Urql.UseQueryArgs<GetRestaurantReviewsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetRestaurantReviewsQuery>({ query: GetRestaurantReviewsDocument, ...options });
+};
+export const IsRestaurantFavouriteDocument = gql`
+    query isRestaurantFavourite($id: String!) {
+  isFavourite(id: $id)
+}
+    `;
+
+export function useIsRestaurantFavouriteQuery(options: Omit<Urql.UseQueryArgs<IsRestaurantFavouriteQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<IsRestaurantFavouriteQuery>({ query: IsRestaurantFavouriteDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

@@ -1,12 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React from "react";
 import { ListRenderItem, Text, FlatList } from "react-native";
 import styled from "styled-components/native";
 import { COLORS } from "../../constants/Colors";
 import {
   Restaurant,
-  useGetNearbyRestaurantsMutation,
+  useGetFavouriteRestaurantsQuery,
 } from "../../generated/graphql";
 import StyledText from "../StyledText";
 
@@ -31,16 +31,12 @@ const RestaurantRating = styled.View`
   align-items: center;
 `;
 
-const NearbyRestaurants = () => {
+const FavouriteRestaurants = () => {
   const { navigate } = useNavigation();
 
-  const [{ data }, getNearbyRestaurants] = useGetNearbyRestaurantsMutation();
+  const [{ data }] = useGetFavouriteRestaurantsQuery();
 
-  useEffect(() => {
-    getNearbyRestaurants({ latitude: 44.434486, longitude: 26.086292 });
-  }, []);
-
-  const renderNearbyRestaurants: ListRenderItem<Restaurant> = ({ item }) => {
+  const renderFavouriteRestaurant: ListRenderItem<Restaurant> = ({ item }) => {
     return (
       <RestaurantContainer
         onPress={() => {
@@ -71,15 +67,15 @@ const NearbyRestaurants = () => {
   const NearbyRestaurantsHeader = () => {
     return (
       <StyledText
-        fontWeight={700}
         fontSize={24}
+        fontWeight={700}
         style={{
           marginLeft: 20,
           marginRight: 20,
           marginVertical: 10,
         }}
       >
-        Restaurants near you
+        Favourite Restaurants
       </StyledText>
     );
   };
@@ -92,14 +88,16 @@ const NearbyRestaurants = () => {
     <Container>
       <NearbyRestaurantsHeader />
       <FlatList
-        keyExtractor={(item, index) => `nearby-restaurants-${item.id}-${index}`}
-        data={data.getNearbyRestaurants as Restaurant[]}
+        keyExtractor={(item, index) =>
+          `favourite-restaurants-${item.id}-${index}`
+        }
+        data={data.getFavouriteRestaurants as Restaurant[]}
         showsHorizontalScrollIndicator={false}
         horizontal={true}
-        renderItem={renderNearbyRestaurants}
+        renderItem={renderFavouriteRestaurant}
       />
     </Container>
   );
 };
 
-export default NearbyRestaurants;
+export default FavouriteRestaurants;

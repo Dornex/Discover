@@ -6,11 +6,14 @@ import {
   ObjectType,
   Field,
   Query,
+  UseMiddleware,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { MyContext } from "../types";
 import argon2 from "argon2";
 import { COOKIE_NAME } from "../constants";
+import { Restaurant } from "../entities/Restaurant";
+import { isAuth } from "../middleware/isAuth";
 
 @ObjectType()
 class FieldError {
@@ -127,4 +130,21 @@ export class UserResolver {
       })
     );
   }
+
+  @Query(() => [Restaurant])
+  // @UseMiddleware(isAuth)
+  async getFavouriteRestaurants(
+    @Ctx() {req}: MyContext): Promise<Restaurant[]> {
+      const user = await User.findOne(req.session.userId);
+
+      console.log(user);
+      if (user) {
+        const restaurants: Restaurant[] = await Restaurant.findByIds(user.favouriteRestaurants);
+        console.log("Restaurants:", restaurants);
+        return restaurants;
+      }
+
+      console.log("Am ajuns aici!");
+      return [];
+    }
 }
