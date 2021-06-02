@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components/native";
 import { favouriteRestaurantsState } from "../../atoms/favouriteRestaurants";
 import { COLORS } from "../../constants/Colors";
+import { DEFAULT_RESTAURANT_IMAGE } from "../../constants/constants";
 import {
   Restaurant,
   useGetFavouriteRestaurantsQuery,
@@ -69,7 +70,11 @@ const FavouriteRestaurants = () => {
           });
         }}
       >
-        <RestaurantImage source={{ uri: item.imageUrl ? item.imageUrl : "" }} />
+        <RestaurantImage
+          source={{
+            uri: item.imageUrl ? item.imageUrl : DEFAULT_RESTAURANT_IMAGE,
+          }}
+        />
         <StyledText
           fontSize={14}
           fontWeight={600}

@@ -1,0 +1,1 @@
+export const DEFAULT_RESTAURANT_IMAGE = "https://th.bing.com/th/id/Rd1f690428b010cdd85fbada0f274e4fd?rik=YdsNK0FEmuGS9w&riu=http%3a%2f%2fwww.tea-tron.com%2fantorodriguez%2fblog%2fwp-content%2fuploads%2f2016%2f04%2fimage-not-found-4a963b95bf081c3ea02923dceaeb3f8085e1a654fc54840aac61a57a60903fef-584x276.png&ehk=lpeLvQaWbBikKCsKaEoe92Oun8fyBPTFFwGwgod4L6c%3d&risl=&pid=ImgRaw"

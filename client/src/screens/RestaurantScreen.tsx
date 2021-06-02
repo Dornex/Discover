@@ -23,6 +23,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { restaurantReviewsState } from "../atoms/restaurantReviews";
 import { favouriteRestaurantsState } from "../atoms/favouriteRestaurants";
 import RestaurantMap from "../components/RestaurantScreen/RestaurantMap";
+import { DEFAULT_RESTAURANT_IMAGE } from "../constants/constants";
 
 const Container = styled.View`
   flex-direction: column;
@@ -221,7 +222,10 @@ const RestaurantScreen: React.FC<{ route: any }> = ({ route }) => {
     <SafeAreaView>
       <Container>
         <RestaurantImageContainer>
-          <RestaurantImage resizeMode="cover" source={{ uri: imageUrl }}>
+          <RestaurantImage
+            resizeMode="cover"
+            source={{ uri: imageUrl || DEFAULT_RESTAURANT_IMAGE }}
+          >
             <View
               style={{
                 flex: 1,

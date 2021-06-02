@@ -1,15 +1,19 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import Button from "../components/Button";
+import ProfileHeader from "../components/ProfileScreen/ProfileHeader";
+import ProfileMenu from "../components/ProfileScreen/ProfileMenu";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 
 const Container = styled.View`
   flex: 1;
   align-items: center;
-  justify-content: center;
-  border: 1px solid red;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
 `;
 
 const ProfileScreen = () => {
@@ -38,7 +42,14 @@ const ProfileScreen = () => {
     );
   }
 
-  return <Container>{body}</Container>;
+  return (
+    <SafeAreaView style={{ width: "100%", height: "100%" }}>
+      <Container>
+        <ProfileHeader />
+        <ProfileMenu />
+      </Container>
+    </SafeAreaView>
+  );
 };
 
 export default ProfileScreen;

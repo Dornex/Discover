@@ -14,6 +14,7 @@ import {
   RegisterMutation,
 } from "./src/generated/graphql";
 import { RecoilRoot } from "recoil";
+import { ThemeProvider } from "react-native-elements";
 
 function betterUpdateQuery<Result, Query>(
   cache: Cache,
@@ -89,14 +90,16 @@ export default function App() {
     return <SplashScreen />;
   } else {
     return (
-      <RecoilRoot>
-        <Provider value={client}>
-          <SafeAreaProvider>
-            <Navigation />
-            <StatusBar />
-          </SafeAreaProvider>
-        </Provider>
-      </RecoilRoot>
+      <ThemeProvider>
+        <RecoilRoot>
+          <Provider value={client}>
+            <SafeAreaProvider>
+              <Navigation />
+              <StatusBar />
+            </SafeAreaProvider>
+          </Provider>
+        </RecoilRoot>
+      </ThemeProvider>
     );
   }
 }

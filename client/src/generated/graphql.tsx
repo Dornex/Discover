@@ -31,6 +31,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   toggleFavourite?: Maybe<Scalars['Boolean']>;
   getNearbyRestaurants?: Maybe<Array<Restaurant>>;
+  searchRestaurants?: Maybe<Array<Restaurant>>;
   getDetailedRestaurant: RestaurantDetails;
 };
 
@@ -69,6 +70,13 @@ export type MutationToggleFavouriteArgs = {
 
 
 export type MutationGetNearbyRestaurantsArgs = {
+  longitude: Scalars['Float'];
+  latitude: Scalars['Float'];
+};
+
+
+export type MutationSearchRestaurantsArgs = {
+  keyword: Scalars['String'];
   longitude: Scalars['Float'];
   latitude: Scalars['Float'];
 };
@@ -285,6 +293,21 @@ export type RegisterMutation = (
   ) }
 );
 
+export type SearchNearbyRestaurantsMutationVariables = Exact<{
+  longitude: Scalars['Float'];
+  latitude: Scalars['Float'];
+  keyword: Scalars['String'];
+}>;
+
+
+export type SearchNearbyRestaurantsMutation = (
+  { __typename?: 'Mutation' }
+  & { searchRestaurants?: Maybe<Array<(
+    { __typename?: 'Restaurant' }
+    & Pick<Restaurant, 'id' | 'name' | 'latitude' | 'longitude' | 'rating' | 'imageUrl' | 'priceRange'>
+  )>> }
+);
+
 export type ToggleFavouriteMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -489,6 +512,24 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const SearchNearbyRestaurantsDocument = gql`
+    mutation SearchNearbyRestaurants($longitude: Float!, $latitude: Float!, $keyword: String!) {
+  searchRestaurants(longitude: $longitude, latitude: $latitude, keyword: $keyword) {
+    id
+    name
+    latitude
+    longitude
+    name
+    rating
+    imageUrl
+    priceRange
+  }
+}
+    `;
+
+export function useSearchNearbyRestaurantsMutation() {
+  return Urql.useMutation<SearchNearbyRestaurantsMutation, SearchNearbyRestaurantsMutationVariables>(SearchNearbyRestaurantsDocument);
 };
 export const ToggleFavouriteDocument = gql`
     mutation toggleFavourite($id: String!) {

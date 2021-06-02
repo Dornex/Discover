@@ -1,0 +1,20 @@
+mutation SearchNearbyRestaurants(
+  $longitude: Float!
+  $latitude: Float!
+  $keyword: String!
+) {
+  searchRestaurants(
+    longitude: $longitude
+    latitude: $latitude
+    keyword: $keyword
+  ) {
+    id
+    name
+    latitude
+    longitude
+    name
+    rating
+    imageUrl
+    priceRange
+  }
+}

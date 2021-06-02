@@ -3,34 +3,78 @@
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
 
-import { Ionicons } from "@expo/vector-icons";
+import {
+  Entypo,
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
+import styled from "styled-components/native";
+import { COLORS } from "../constants/Colors";
 
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import SearchScreen from "../screens/SearchScreen";
 
 const BottomTab = createBottomTabNavigator();
 
+const SearchContainer = styled.View`
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  background-color: ${COLORS.ORANGE};
+  border: 1px solid white;
+  border-radius: 28px;
+  justify-content: center;
+`;
+
 export default function BottomTabNavigator() {
   return (
-    <BottomTab.Navigator initialRouteName="HomeScreen">
+    <BottomTab.Navigator
+      initialRouteName="HomeScreen"
+      tabBarOptions={{
+        activeTintColor: COLORS.ORANGE,
+        style: {
+          borderTopColor: "rgba(0, 0, 0, 0)",
+        },
+      }}
+    >
       <BottomTab.Screen
-        name="HomeScreen"
+        name="Discover"
         component={HomescreenNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ios-code" color={color} />
+            <Entypo name="home" size={24} color={color} />
           ),
         }}
       />
       <BottomTab.Screen
-        name="ProfileScreen"
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarLabel: "",
+          tabBarIcon: ({ color }) => {
+            return (
+              <SearchContainer>
+                <FontAwesome name="search" size={24} color={COLORS.WHITE} />
+              </SearchContainer>
+            );
+          },
+        }}
+      />
+      <BottomTab.Screen
+        name="Profile"
         component={ProfileNavigator}
         options={{
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ios-code" color={color} />
+            <MaterialCommunityIcons
+              name="account-details"
+              size={24}
+              color={color}
+            />
           ),
         }}
       />

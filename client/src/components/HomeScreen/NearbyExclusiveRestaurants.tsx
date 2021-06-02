@@ -1,15 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React from "react";
 import { ListRenderItem, Text, FlatList } from "react-native";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components/native";
 import { userLocationState } from "../../atoms/userLocation";
 import { COLORS } from "../../constants/Colors";
+import { DEFAULT_RESTAURANT_IMAGE } from "../../constants/constants";
 import {
   Restaurant,
   useGetNearbyImportantRestaurantsQuery,
-  useGetNearbyRestaurantsMutation,
 } from "../../generated/graphql";
 import StyledText from "../StyledText";
 
@@ -40,8 +40,8 @@ const NearbyExclusiveRestaurants = () => {
 
   const [{ data }] = useGetNearbyImportantRestaurantsQuery({
     variables: {
-      latitude: userLocation.coords.latitude,
-      longitude: userLocation.coords.longitude,
+      latitude: userLocation ? userLocation.coords.latitude : 0,
+      longitude: userLocation ? userLocation.coords.longitude : 0,
     },
   });
 
@@ -63,7 +63,11 @@ const NearbyExclusiveRestaurants = () => {
           });
         }}
       >
-        <RestaurantImage source={{ uri: item.imageUrl ? item.imageUrl : "" }} />
+        <RestaurantImage
+          source={{
+            uri: item.imageUrl ? item.imageUrl : DEFAULT_RESTAURANT_IMAGE,
+          }}
+        />
         <StyledText
           fontSize={14}
           fontWeight={600}
