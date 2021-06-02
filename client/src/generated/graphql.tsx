@@ -87,6 +87,7 @@ export type Query = {
   restaurants: Array<Restaurant>;
   restaurant?: Maybe<Restaurant>;
   isFavourite: Scalars['Boolean'];
+  getNearbyImportantRestaurants?: Maybe<Array<Restaurant>>;
 };
 
 
@@ -102,6 +103,12 @@ export type QueryRestaurantArgs = {
 
 export type QueryIsFavouriteArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryGetNearbyImportantRestaurantsArgs = {
+  longitude: Scalars['Float'];
+  latitude: Scalars['Float'];
 };
 
 export type Restaurant = {
@@ -299,6 +306,20 @@ export type GetFavouriteRestaurantsQuery = (
   )> }
 );
 
+export type GetNearbyImportantRestaurantsQueryVariables = Exact<{
+  longitude: Scalars['Float'];
+  latitude: Scalars['Float'];
+}>;
+
+
+export type GetNearbyImportantRestaurantsQuery = (
+  { __typename?: 'Query' }
+  & { getNearbyImportantRestaurants?: Maybe<Array<(
+    { __typename?: 'Restaurant' }
+    & Pick<Restaurant, 'id' | 'name' | 'latitude' | 'longitude' | 'rating' | 'imageUrl' | 'priceRange'>
+  )>> }
+);
+
 export type GetRestaurantReviewsQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -494,6 +515,24 @@ export const GetFavouriteRestaurantsDocument = gql`
 
 export function useGetFavouriteRestaurantsQuery(options: Omit<Urql.UseQueryArgs<GetFavouriteRestaurantsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetFavouriteRestaurantsQuery>({ query: GetFavouriteRestaurantsDocument, ...options });
+};
+export const GetNearbyImportantRestaurantsDocument = gql`
+    query GetNearbyImportantRestaurants($longitude: Float!, $latitude: Float!) {
+  getNearbyImportantRestaurants(longitude: $longitude, latitude: $latitude) {
+    id
+    name
+    latitude
+    longitude
+    name
+    rating
+    imageUrl
+    priceRange
+  }
+}
+    `;
+
+export function useGetNearbyImportantRestaurantsQuery(options: Omit<Urql.UseQueryArgs<GetNearbyImportantRestaurantsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetNearbyImportantRestaurantsQuery>({ query: GetNearbyImportantRestaurantsDocument, ...options });
 };
 export const GetRestaurantReviewsDocument = gql`
     query getRestaurantReviews($id: String!) {

@@ -80,7 +80,7 @@ const RecentReviews = () => {
         </ItemHeader>
         <StyledText
           fontSize={14}
-          color={COLORS.GRAY}
+          color={COLORS.DARK_GRAY}
           style={{ marginTop: 10 }}
           ellipsizeMode="tail"
         >

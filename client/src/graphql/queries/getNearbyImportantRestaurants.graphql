@@ -1,0 +1,12 @@
+query GetNearbyImportantRestaurants($longitude: Float!, $latitude: Float!) {
+  getNearbyImportantRestaurants(longitude: $longitude, latitude: $latitude) {
+    id
+    name
+    latitude
+    longitude
+    name
+    rating
+    imageUrl
+    priceRange
+  }
+}
