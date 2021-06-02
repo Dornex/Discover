@@ -57,13 +57,28 @@ const RestaurantReviews: React.FC = () => {
 
   return (
     <Container>
-      <FlatList
-        data={reviews}
-        renderItem={renderItem}
-        keyExtractor={(item) => `review-${item.id}`}
-        showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={Line}
-      />
+      {reviews.length > 0 ? (
+        <FlatList
+          data={reviews}
+          renderItem={renderItem}
+          keyExtractor={(item) => `review-${item.id}`}
+          showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={Line}
+        />
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            alignSelf: "center",
+            height: "70%",
+          }}
+        >
+          <StyledText fontSize={24} style={{ textAlign: "center" }}>
+            This restaurant has no reviews. Be the first one to share your
+            experience!
+          </StyledText>
+        </View>
+      )}
     </Container>
   );
 };

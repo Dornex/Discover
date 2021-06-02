@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ListRenderItem, Text, FlatList } from "react-native";
 import { useRecoilState } from "recoil";
 import styled from "styled-components/native";
@@ -36,6 +36,8 @@ const RestaurantRating = styled.View`
 const FavouriteRestaurants = () => {
   const { navigate } = useNavigation();
 
+  const [once, setOnce] = useState(true);
+
   const [{ data }] = useGetFavouriteRestaurantsQuery();
 
   const [favouriteRestaurants, setFavouriteRestaurants] = useRecoilState(
@@ -43,8 +45,9 @@ const FavouriteRestaurants = () => {
   );
 
   useEffect(() => {
-    if (data?.getFavouriteRestaurants) {
+    if (data?.getFavouriteRestaurants && once) {
       setFavouriteRestaurants(data.getFavouriteRestaurants as Restaurant[]);
+      setOnce(false);
     }
   }, [data]);
 
@@ -66,11 +69,19 @@ const FavouriteRestaurants = () => {
           });
         }}
       >
-        <RestaurantImage source={{ uri: item.imageUrl }} />
-        <Text>{item.name}</Text>
+        <RestaurantImage source={{ uri: item.imageUrl ? item.imageUrl : "" }} />
+        <StyledText
+          fontSize={14}
+          fontWeight={600}
+          style={{ marginVertical: 5 }}
+        >
+          {item.name}
+        </StyledText>
         <RestaurantRating>
-          <Text style={{ fontSize: 20 }}>{item.rating}</Text>
-          <Ionicons name="star" color={COLORS.YELLOW} size={20} />
+          <StyledText fontSize={14} style={{ marginRight: 5 }}>
+            {item.rating}
+          </StyledText>
+          <Ionicons name="star" color={COLORS.YELLOW} size={18} />
         </RestaurantRating>
       </RestaurantContainer>
     );

@@ -18,7 +18,6 @@ const HomeScreen = () => {
       return;
     } else {
       const userLocation = await Location.getCurrentPositionAsync();
-      console.log("INITIAL LOCATION:", userLocation.coords);
       setUserLocation(userLocation);
     }
   };

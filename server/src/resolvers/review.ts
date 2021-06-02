@@ -77,7 +77,6 @@ export class ReviewResolver {
 
   @Mutation(() => [Review], {nullable: true})
   async recentReviews(): Promise<Review[] | null> {
-    console.log("Recent reviews:", await Review.find({}))
     return await Review.find({
       order: {
         createdAt: "DESC"

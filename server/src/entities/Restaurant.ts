@@ -32,12 +32,15 @@ export class Restaurant extends BaseEntity {
   name!: string;
 
   @Field(() => Float, {defaultValue: 1})
+  @Column("decimal")
   rating!: number;
 
   @Field(() => String, {defaultValue: ''})
+  @Column()
   imageUrl: string;
 
   @Field(() => Int, {defaultValue: 1})
+  @Column()
   priceRange!: number;
 
   @RelationId((restaurant: Restaurant) => restaurant.reviews)

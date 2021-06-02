@@ -25,10 +25,11 @@ const main = async () => {
     database: "discover-typeorm",
     username: "postgres",
     password: "postgres",
-    logging: true,
+    // logging: true,
     synchronize: true,
     entities: [Review, User, Restaurant],
   });
+  
 
   const app = express();
   const RedisStore = connectRedis(session);

@@ -37,7 +37,6 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         database: "discover-typeorm",
         username: "postgres",
         password: "postgres",
-        logging: true,
         synchronize: true,
         entities: [Review_1.Review, User_1.User, Restaurant_1.Restaurant],
     });

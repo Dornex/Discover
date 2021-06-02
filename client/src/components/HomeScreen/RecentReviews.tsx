@@ -106,7 +106,7 @@ const RecentReviews = () => {
   };
 
   if (!data) {
-    return <Text>Loading...</Text>;
+    return null;
   }
 
   return (

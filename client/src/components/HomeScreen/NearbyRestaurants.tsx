@@ -41,7 +41,6 @@ const NearbyRestaurants = () => {
 
   useEffect(() => {
     if (userLocation) {
-      console.log(userLocation.coords);
       getNearbyRestaurants({
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
@@ -67,11 +66,19 @@ const NearbyRestaurants = () => {
           });
         }}
       >
-        <RestaurantImage source={{ uri: item.imageUrl }} />
-        <Text>{item.name}</Text>
+        <RestaurantImage source={{ uri: item.imageUrl ? item.imageUrl : "" }} />
+        <StyledText
+          fontSize={14}
+          fontWeight={600}
+          style={{ marginVertical: 5 }}
+        >
+          {item.name}
+        </StyledText>
         <RestaurantRating>
-          <Text style={{ fontSize: 20 }}>{item.rating}</Text>
-          <Ionicons name="star" color={COLORS.YELLOW} size={20} />
+          <StyledText fontSize={14} style={{ marginRight: 5 }}>
+            {item.rating}
+          </StyledText>
+          <Ionicons name="star" color={COLORS.YELLOW} size={18} />
         </RestaurantRating>
       </RestaurantContainer>
     );
