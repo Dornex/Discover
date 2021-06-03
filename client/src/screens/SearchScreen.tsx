@@ -90,9 +90,9 @@ const SearchScreen = () => {
         />
         <View
           style={{
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "center",
-            marginLeft: 10,
+            marginLeft: 15,
             width: "100%",
           }}
         >
@@ -100,14 +100,11 @@ const SearchScreen = () => {
             {item.name}
           </StyledText>
           <RestaurantRating>
-            <StyledText fontSize={14} style={{ marginRight: 5 }}>
+            <StyledText fontSize={16} style={{ marginRight: 5 }}>
               {item.rating}
             </StyledText>
-            <Ionicons name="star" color={COLORS.YELLOW} size={18} />
+            <Ionicons name="star" color={COLORS.YELLOW} size={20} />
           </RestaurantRating>
-          <StyledText fontSize={16} color={COLORS.DARK_GRAY}>
-            {item.address}
-          </StyledText>
         </View>
       </RestaurantContainer>
     );

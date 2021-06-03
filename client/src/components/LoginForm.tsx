@@ -60,7 +60,6 @@ const LoginForm = () => {
           error={touched.password && errors.password}
           placeholder="Enter your password"
           autoCapitalize="none"
-          keyboardType="password"
           secureTextEntry
           onChangeText={handleChange("password")}
           value={values.password}

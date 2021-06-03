@@ -40,8 +40,16 @@ const Stack = createStackNavigator();
 const Auth = () => {
   return (
     <Stack.Navigator initialRouteName="LoginScreen">
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RegisterScreen"
+        component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

@@ -257,9 +257,9 @@ export class GoogleMapsResolver {
 
     return {
       id: restaurantId,
-      address: restaurantDetails.data.result.formatted_address,
-      phoneNumber: restaurantDetails.data.result.formatted_phone_number,
-      website: restaurantDetails.data.result.website,
+      address: restaurantDetails.data.result.formatted_address || 'No address',
+      phoneNumber: restaurantDetails.data.result.formatted_phone_number || 'No phone number',
+      website: restaurantDetails.data.result.website || 'No website',
     };
   }
 }
