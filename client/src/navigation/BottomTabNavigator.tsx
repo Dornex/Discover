@@ -14,6 +14,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import styled from "styled-components/native";
 import { COLORS } from "../constants/Colors";
+import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -111,6 +112,11 @@ function ProfileNavigator() {
       <ProfileStack.Screen
         name="ProfileScreen"
         component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <ProfileStack.Screen
+        name="ChangePassword"
+        component={ChangePasswordScreen}
         options={{ headerShown: false }}
       />
     </ProfileStack.Navigator>

@@ -84,6 +84,8 @@ const AddReviewModal: React.FC<{
             Set the review title
           </StyledText>
           <TextInput
+            autoCompleteType="off"
+            autoCorrect={false}
             value={title}
             onChangeText={(text) => setTitle(text)}
             style={{
@@ -107,6 +109,8 @@ const AddReviewModal: React.FC<{
           </StyledText>
           <TextInput
             multiline={true}
+            autoCompleteType="off"
+            autoCorrect={false}
             value={review}
             onChangeText={(text) => setReview(text)}
             style={{

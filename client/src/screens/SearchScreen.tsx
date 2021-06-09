@@ -117,7 +117,7 @@ const SearchScreen = () => {
           <SearchBar
             platform="default"
             containerStyle={{ width: "100%", backgroundColor: COLORS.ORANGE }}
-            placeholder="Search restaurants..."
+            placeholder="Enter keywords to search restaurants..."
             onChangeText={(search: string) => {
               setSearchText(search);
             }}

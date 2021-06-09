@@ -28,6 +28,7 @@ export type Mutation = {
   recentReviews?: Maybe<Array<Review>>;
   register: UserResponse;
   login: UserResponse;
+  changePassword: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   toggleFavourite?: Maybe<Scalars['Boolean']>;
   getNearbyRestaurants?: Maybe<Array<Restaurant>>;
@@ -61,6 +62,12 @@ export type MutationRegisterArgs = {
 export type MutationLoginArgs = {
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String'];
+  currentPassword: Scalars['String'];
 };
 
 
@@ -181,6 +188,17 @@ export type UserResponse = {
 export type RegularUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'username'>
+);
+
+export type ChangePasswordMutationVariables = Exact<{
+  currentPassword: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'changePassword'>
 );
 
 export type CreateReviewMutationVariables = Exact<{
@@ -391,6 +409,15 @@ export const RegularUserFragmentDoc = gql`
   username
 }
     `;
+export const ChangePasswordDocument = gql`
+    mutation changePassword($currentPassword: String!, $newPassword: String!) {
+  changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+}
+    `;
+
+export function useChangePasswordMutation() {
+  return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
 export const CreateReviewDocument = gql`
     mutation createReview($input: ReviewInput!) {
   createReview(input: $input) {

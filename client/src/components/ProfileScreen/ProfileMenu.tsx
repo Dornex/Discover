@@ -1,7 +1,9 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components/native";
+import { favouriteRestaurantsState } from "../../atoms/favouriteRestaurants";
 import { useLogoutMutation } from "../../generated/graphql";
 import MenuItem from "./MenuItem";
 
@@ -13,6 +15,8 @@ const ProfileMenu: React.FC = () => {
 
   const [, logout] = useLogoutMutation();
 
+  const setFavouriteRestaurants = useSetRecoilState(favouriteRestaurantsState);
+
   return (
     <Container>
       <MenuItem
@@ -21,11 +25,15 @@ const ProfileMenu: React.FC = () => {
         children={
           <Ionicons name="ios-lock-closed-sharp" size={24} color="black" />
         }
+        onPress={() => {
+          navigate("ChangePassword");
+        }}
       />
       <MenuItem
         onPress={() => {
           logout();
-          navigate("LoginScreen");
+          setFavouriteRestaurants([]);
+          navigate("Auth", { screen: "LoginScreen" });
         }}
         name="Logout"
         children={<MaterialIcons name="logout" size={24} color="black" />}

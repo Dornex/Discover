@@ -116,6 +116,26 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async changePassword(
+  @Ctx() {req}: MyContext,  
+  @Arg("currentPassword", () => String) currentPassword: string,
+  @Arg("newPassword", () => String) newPassword: string) {
+    const user = await User.findOne(req.session.userId)
+
+    const passwordMatch = await argon2.verify(user!.password, currentPassword);
+    console.log(passwordMatch);
+    if (passwordMatch) {
+      user!.password = await argon2.hash(newPassword)
+      user!.save()
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  @Mutation(() => Boolean)
   async logout(@Ctx() { req, res }: MyContext) {
     return new Promise((resolve) =>
       req.session.destroy((err) => {
